@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
        xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jee="http://www.springframework.org/schema/jee"
        xsi:schemaLocation="http://www.springframework.org/schema/beans 
 	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
 	http://www.springframework.org/schema/context
 	http://www.springframework.org/schema/context/spring-context.xsd
 	http://www.springframework.org/schema/tx
 	http://www.springframework.org/schema/tx/spring-tx.xsd
+	http://www.springframework.org/schema/jee
+	http://www.springframework.org/schema/jee/spring-jee.xsd
 	">
     <!--上下文组件扫描-->
     <!--<context:component-scan base-package="dao,service" />
@@ -25,6 +29,9 @@
         <property name="initialSize" value="${jdbc.initialSize}"/>
         <property name="maxWaitMillis" value="${jdbc.maxWait}"/>
     </bean>-->
+    <!--创建一个数据源-->
+    <jee:jndi-lookup id="dataSource" jndi-name="jdbc/mysql"
+                     proxy-interface="javax.sql.DataSource" lookup-on-startup="true" />
 
     <!--配置mybatis映射路径-->
     <!--<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
