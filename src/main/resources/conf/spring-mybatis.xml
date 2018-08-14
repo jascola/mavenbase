@@ -14,8 +14,8 @@
 	http://www.springframework.org/schema/jee/spring-jee.xsd
 	">
     <!--上下文组件扫描-->
-    <!--<context:component-scan base-package="dao,service" />
-    <context:property-placeholder location="classpath:conf/jdbc.properties" />-->
+    <context:component-scan base-package="com.jascola.*"/>
+    <context:property-placeholder location="classpath:conf/jdbc.properties,classpath:conf/redis.properties"/>
 
     <!--创建一个数据源-->
     <!--<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
@@ -31,25 +31,44 @@
     </bean>-->
     <!--创建一个数据源-->
     <jee:jndi-lookup id="dataSource" jndi-name="jdbc/mysql"
-                     proxy-interface="javax.sql.DataSource" lookup-on-startup="true" />
+                     proxy-interface="javax.sql.DataSource" lookup-on-startup="true"/>
 
     <!--配置mybatis映射路径-->
-    <!--<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
-        <property name="mapperLocations" value="classpath:mapper/*.xml"/>
-    </bean>-->
+        <property name="mapperLocations" value="classpath:conf/SqlMap/*.xml"/>
+    </bean>
 
     <!--配置mybatis映射对应的接口包路径-->
-    <!--<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="dao"/>
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.jascola.dao"/>
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
-    </bean>-->
+    </bean>
 
     <!--配置事务-->
-   <!-- <bean id="transactionManager"
+    <bean id="transactionManager"
           class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"></property>
-    </bean>-->
+    </bean>
 
-    <!--<tx:annotation-driven transaction-manager="transactionManager" />-->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!--redis连接池设置-->
+    <bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxIdle" value="${redis.maxIdle}" />
+        <property name="maxTotal" value="${redis.maxActive}" />
+        <property name="maxWaitMillis" value="${redis.maxWait}" />
+        <property name="testOnBorrow" value="${redis.testOnBorrow}" />
+    </bean>
+
+    <!-- redis连接池 -->
+    <bean id="jedisPool" class="redis.clients.jedis.JedisPool" destroy-method="destroy"  depends-on="poolConfig">
+        <constructor-arg name="poolConfig" ref="poolConfig" /> <!-- 加载jedisPool配置信息 -->
+        <constructor-arg name="host" value="${redis.host}" /><!-- redis主机地址 -->
+        <constructor-arg name="port" value="${redis.port}"/> <!-- redis连接端口 -->
+        <constructor-arg name="password" value="${redis.pass}"/> <!--密码-->
+        <!--<constructor-arg name="database" value="${redis.database}"/> 数据库 -->
+        <constructor-arg name="timeout" value="${redis.timeout}"/>  <!--连接超时-->
+    </bean>
+
 </beans>
