@@ -1,8 +1,5 @@
 package com.jascola.entity;
 
-/**
- * Created by 86085359 on 2018/4/16.
- */
 public class User {
     private Integer id;
     private String phone;

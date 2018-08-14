@@ -9,9 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-/**
- * Created by 86085359 on 2018/4/16.
- */
 @Service
 public class UserService {
     @Autowired
