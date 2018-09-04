@@ -33,7 +33,7 @@ public class UserController extends BaseController {
         Jedis jedis = jedisPool.getResource();
         System.out.println(jedis.get("name"));
         System.out.println("my server is start!");
-        ajaxJson(response, JSON.toJSONString(users));
+        super.ResponseJson(response, JSON.toJSONString(users));
 
     }
 
