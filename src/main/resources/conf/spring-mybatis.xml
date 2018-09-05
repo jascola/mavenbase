@@ -17,6 +17,13 @@
     <context:component-scan base-package="com.jascola.*"/>
     <context:property-placeholder location="classpath:conf/jdbc.properties,classpath:conf/redis.properties"/>
 
+    <bean id="prop" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="locations">
+            <array>
+                <value>classpath:conf/path.properties</value>
+            </array>
+        </property>
+    </bean>
     <!--创建一个数据源-->
     <!--<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="${jdbc.driver}"/>

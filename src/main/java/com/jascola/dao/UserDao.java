@@ -1,21 +1,21 @@
 package com.jascola.dao;
 
-import com.jascola.entity.User;
+import com.jascola.entity.UserEntity;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
 public interface UserDao {
-    int insert(User user);
+    int insert(UserEntity user);
 
-    User selectByPhone(String phone);
+    UserEntity selectByPhone(String phone);
 
     int delete(String phone);
 
-    int update(User user);
+    int update(UserEntity user);
 
-    User selectById(Integer id);
+    UserEntity selectById(Integer id);
 
-    List<User> selectAll();
+    List<UserEntity> selectAll();
 }

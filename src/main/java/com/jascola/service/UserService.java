@@ -2,7 +2,7 @@ package com.jascola.service;
 
 
 import com.jascola.dao.UserDao;
-import com.jascola.entity.User;
+import com.jascola.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,10 +14,10 @@ public class UserService {
     @Autowired
     private UserDao dao;
     @Transactional
-    public int insert(User user){
+    public int insert(UserEntity user){
         return dao.insert(user);
     }
-    public User selectByPhone(String phone){
+    public UserEntity selectByPhone(String phone){
         return dao.selectByPhone(phone);
     }
     @Transactional
@@ -25,11 +25,11 @@ public class UserService {
         return this.dao.delete(phone);
     }
     @Transactional
-    public int update(User user){
+    public int update(UserEntity user){
         return this.dao.update(user);
     }
-    public User selectById(Integer id){
+    public UserEntity selectById(Integer id){
         return  this.dao.selectById(id);
     }
-    public List<User> selectAll(){return this.dao.selectAll();}
+    public List<UserEntity> selectAll(){return this.dao.selectAll();}
 }

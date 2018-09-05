@@ -6,27 +6,28 @@
 <!-- 现在namespace指要映射给哪个接口 -->
 <mapper namespace="com.jascola.dao.UserDao">
 
-    <insert id="insert" parameterType="com.jascola.entity.User">
-        insert into user (phone,name,password,spwd,email) VALUES (#{phone},#{name},#{password},#{spwd},#{email})
+    <insert id="insert" parameterType="com.jascola.entity.UserEntity">
+        insert into user (phone,name,password,email) VALUES (#{phone},#{name},#{password},#{email})
     </insert>
 
-    <select id="selectByPhone" parameterType="java.lang.String" resultType="com.jascola.entity.User">
-        select *from user where phone = #{phone}
+    <select id="selectByPhone" parameterType="java.lang.String" resultType="com.jascola.entity.UserEntity">
+        select phone , name, password, email from user
+        where phone = #{phone}
     </select>
 
     <delete id="delete" parameterType="java.lang.String" >
         DELETE FROM user WHERE phone = #{phone}
     </delete>
 
-    <update id="update" parameterType="com.jascola.entity.User">
-        UPDATE USER set phone=#{phone},name=#{name},password=#{password},spwd=#{spwd},email=#{email} where id=#{id}
+    <update id="update" parameterType="com.jascola.entity.UserEntity">
+        UPDATE USER set phone=#{phone},name=#{name},password=#{password},email=#{email} where id=#{id}
     </update>
 
-    <select id="selectById" parameterType="java.lang.Integer" resultType="com.jascola.entity.User">
-        select *from user where id = #{id}
+    <select id="selectById" parameterType="java.lang.Integer" resultType="com.jascola.entity.UserEntity">
+        select phone , name, password, email from user where id = #{id}
     </select>
 
-    <select id="selectAll" resultType="com.jascola.entity.User">
+    <select id="selectAll" resultType="com.jascola.entity.UserEntity">
         SELECT *FROM user
     </select>
 </mapper>
