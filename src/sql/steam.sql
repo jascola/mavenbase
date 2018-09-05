@@ -56,6 +56,7 @@ CREATE TABLE `pictures` (
   `virtualdir` varchar(100) DEFAULT NULL COMMENT '虚拟路径',
   `indexpic` varchar(100) DEFAULT NULL COMMENT '封面虚拟路径',
   `indexrealdir` varchar(100) DEFAULT NULL COMMENT '封面物理路径',
+  `count` int default null comment '相片个数',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

@@ -29,6 +29,18 @@ public class PicturesEntity {
      * 静态服务代理地址
      */
     private String indexrealdir;
+    /**
+     * 相片个数
+     */
+    private Integer count;
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
 
     public String getPicname() {
         return picname;

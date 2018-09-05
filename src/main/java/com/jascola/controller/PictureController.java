@@ -12,4 +12,10 @@ public class PictureController {
 
     @Value("#{prop.virpath}")
     private String virpath;
+
+    @Value("#{prop.indexpath}")
+    private String indexpath;
+
+    @Value("#{prop.indexrealpath}")
+    private String indexrealpath;
 }
