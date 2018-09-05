@@ -7,15 +7,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping(value = "/pic")
 public class PictureController {
-    @Value("#{prop.realpath}")
+    @Value("#{prop['resource.realpath']}")
     private String realpath;
 
-    @Value("#{prop.virpath}")
+    @Value("#{prop['resource.virpath']}")
     private String virpath;
 
-    @Value("#{prop.indexpath}")
+    @Value("#{prop['resource.indexpath']}")
     private String indexpath;
 
-    @Value("#{prop.indexrealpath}")
+    @Value("#{prop['resource.indexrealpath']}")
     private String indexrealpath;
 }
