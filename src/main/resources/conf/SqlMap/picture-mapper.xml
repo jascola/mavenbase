@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespcae原来指命名空间 -->
+<!-- 现在namespace指要映射给哪个接口 -->
+<mapper namespace="com.jascola.dao.PictureDao">
+
+    <insert id="insert" parameterType="com.jascola.entity.PicturesEntity">
+        INSERT INTO pictures (id,picname,authorname,tag,realdir,virtualdir,indexpic,indexrealdir,counts,flag)
+        VALUES (#{id}, #{picname},#{authorname},#{tag},#{realdir},#{virtualdir},#{indexpic},#{indexrealdir},#{counts},1)
+    </insert>
+
+    <select id="selectByPicName" parameterType="java.lang.String" resultType="com.jascola.entity.PicturesEntity">
+        select id, picname,authorname,tag,realdir,virtualdir,indexpic,indexrealdir,counts FROM pictures
+        WHERE flag = 1 AND picname = #{picname}
+    </select>
+
+    <select id="selectByAuName" parameterType="java.lang.String" resultType="com.jascola.entity.PicturesEntity">
+        select id, picname,authorname,tag,realdir,virtualdir,indexpic,indexrealdir,counts FROM pictures
+        WHERE flag = 1 AND authorname = #{authorname}
+    </select>
+
+    <delete id="deleteByPicName" parameterType="java.lang.String" >
+        UPDATE pictures SET flag = 0  WHERE picname = #{picname}
+    </delete>
+
+    <delete id="deleteByAuName" parameterType="java.lang.String" >
+        UPDATE pictures SET flag = 0 WHERE authorname = #{authorname}
+    </delete>
+
+    <update id="update" parameterType="com.jascola.entity.PicturesEntity">
+        UPDATE pictures set picname = #{picname},authorname = #{authorname} , tag=#{tag},counts = #{counts}
+         WHERE flag = 1 AND id=#{id}
+    </update>
+
+    <select id="selectAll" resultType="com.jascola.entity.PicturesEntity">
+        SELECT *FROM pictures WHERE flag = 1
+    </select>
+</mapper>

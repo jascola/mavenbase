@@ -38,18 +38,18 @@
     </mvc:annotation-driven>
 
     <!--配置视图解析-->
-    <!--<bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
         <property name="prefix" value="/WEB-INF/views/"/>
         <property name="suffix" value=".jsp"/>
-    </bean>-->
+    </bean>
 
     <!--资源文件可访问-->
     <!--<mvc:resources location="/resources/" mapping="/resources/**" />-->
 
     <!--文件上传-->
-    <!--<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
         <property name="maxUploadSize" value="999999999999999999"/>
-    </bean>-->
+    </bean>
 
 </beans>

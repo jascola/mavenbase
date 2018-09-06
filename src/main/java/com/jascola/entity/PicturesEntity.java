@@ -1,6 +1,8 @@
 package com.jascola.entity;
 
 public class PicturesEntity {
+
+    private Integer id;
     /**
      * 相册名
      */
@@ -32,14 +34,22 @@ public class PicturesEntity {
     /**
      * 相片个数
      */
-    private Integer count;
+    private Integer counts;
 
-    public Integer getCount() {
-        return count;
+    public Integer getCounts() {
+        return counts;
     }
 
-    public void setCount(Integer count) {
-        this.count = count;
+    public void setCounts(Integer counts) {
+        this.counts = counts;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getPicname() {
