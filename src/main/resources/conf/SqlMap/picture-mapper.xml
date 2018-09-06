@@ -42,4 +42,12 @@
     <select id="selectAll" resultType="com.jascola.entity.PicturesEntity" parameterType="com.jascola.dto.PicQueryDto">
         SELECT *FROM pictures WHERE flag = 1 limit  #{startRow},#{pageSize}
     </select>
+
+    <select id="selectCount"  resultType="java.lang.Integer">
+        SELECT count(*) FROM pictures WHERE flag = 1
+    </select>
+
+    <select id="selectCountByAuName"  resultType="java.lang.Integer">
+        SELECT count(*) FROM pictures WHERE flag = 1 and authorname = #{authorname}
+    </select>
 </mapper>

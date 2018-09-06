@@ -3,7 +3,9 @@ package com.jascola.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.jascola.dto.PicQueryDto;
+import com.jascola.entity.PicturesEntity;
 import com.jascola.entity.UserEntity;
+import com.jascola.service.Pictureservice;
 import com.jascola.service.UserService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +26,15 @@ import java.util.List;
 public class UserController extends BaseController {
     /*无警告写法*/
     private final UserService userService;
+    private final Pictureservice pictureservice;
     private JedisPool jedisPool;
     private static final Logger LOGGER = Logger.getLogger(UserController.class);
 
     @Autowired
-    public UserController(UserService userService, JedisPool jedisPool) {
+    public UserController(UserService userService, JedisPool jedisPool, Pictureservice pictureservice) {
         this.userService = userService;
         this.jedisPool = jedisPool;
+        this.pictureservice = pictureservice;
     }
 
 
@@ -101,25 +105,31 @@ public class UserController extends BaseController {
             } else {
                 try {
                     UserEntity result = userService.selectByPhone(entity.getPhone());
-                    String pwd = new String(base64Decoder.
-                            decodeBuffer(result.getPassword()));
-                    if (pwd.equals(entity.getPassword())) {
-                        messages.add("登录成功！");
-                        messages.add("欢迎！" + result.getName());
-                        /*签发token*/
-                        jedis.set(result.getPhone(), JSON.toJSONString(result));
-                        jedis.expire(result.getPhone(), 24 * 60 * 60);/*一天之内都可以访问，不用登录*/
+                    if (result != null) {
+                        String pwd = new String(base64Decoder.
+                                decodeBuffer(result.getPassword()));
+                        if (pwd.equals(entity.getPassword())) {
+                            messages.add("登录成功！");
+                            messages.add("欢迎！" + result.getName());
+                            /*签发token*/
+                            jedis.set(result.getPhone(), JSON.toJSONString(result));
+                            jedis.expire(result.getPhone(), 24 * 60 * 60);/*一天之内都可以访问，不用登录*/
 
-                        Cookie cookie = new Cookie("token", base64Encoder.encode(result.getPhone().getBytes()));
-                        cookie.setMaxAge(24 * 60 * 60);
-                        response.addCookie(cookie);
+                            Cookie cookie = new Cookie("token", base64Encoder.encode(result.getPhone().getBytes()));
+                            cookie.setMaxAge(24 * 60 * 60);
+                            response.addCookie(cookie);
 
 
-                        super.ResponseSuccess(response, messages);
-                        System.out.println("从数据库中查");
-                        return;
+                            super.ResponseSuccess(response, messages);
+                            System.out.println("从数据库中查");
+                            return;
+                        } else {
+                            messages.add("账号或密码错误！");
+                            super.ResponseError(response, messages);
+                            return;
+                        }
                     } else {
-                        messages.add("账号或密码错误！");
+                        messages.add("账号不存在，请注册！");
                         super.ResponseError(response, messages);
                         return;
                     }
@@ -135,15 +145,69 @@ public class UserController extends BaseController {
 
     @RequestMapping(value = "/getpic.html")
     public void getPic(PicQueryDto dto, HttpServletResponse response, HttpServletRequest request) {
-        /*List<String> messages = new ArrayList<String>();
-        Jedis jedis = jedisPool.getResource();
-        String content = super.tokenAdminCheck(response, request, messages, jedisPool);
+        /*判断用户是否登录*/
+        List<String> messages = new ArrayList<String>();
+        String content = super.tokenCheck(response, request, messages, jedisPool);
         if (content == null) {
             return;
-        }*/
+        }
+
+        Jedis jedis = jedisPool.getResource();
         String param = dto.getParam();
-        if(param==null||param.equals("")){
-            System.out.println(dto.getPageSize());
+        String pageSize = String.valueOf(dto.getPageSize());
+        String pageNo = String.valueOf(dto.getPageNo());
+        String result;
+        Integer count;
+        List<PicturesEntity> entityList;
+        PicturesEntity picturesEntity;
+        /*判断查询条件*/
+        if (param == null || param.equals("")) {
+            /*判断redis是否有值，有则从redis中取*/
+            result = jedis.get(pageNo + "null" + pageSize);
+            if (result != null && !result.equals("[]")) {
+                super.ResponseJson(response, result);
+                return;
+            }
+            /*没有值去查数据库，并将数据存入redis*/
+            else {
+                count = pictureservice.selectCount();
+                dto.setTotalCount(count);
+                entityList = pictureservice.selectAll(dto);
+                String json = JSON.toJSONString(entityList);
+                jedis.set(pageNo + "null" + pageSize, json);
+                jedis.expire(pageNo + "null" + pageSize, 2 * 60 * 60);
+                super.ResponseJson(response, json);
+                return;
+            }
+        } else {
+            /*判断查询条件是作者名还是相册名*/
+            if ((count = pictureservice.selectCountByAuName(param)) != 0) {
+                result = jedis.get(pageNo + "authorname" + pageSize);
+                if (result != null && !result.equals("[]")) {
+                    super.ResponseJson(response, result);
+                    return;
+                }
+                dto.setTotalCount(count);
+                dto.setAuthorname(param);
+                entityList = pictureservice.selectByAuName(dto);
+                String json = JSON.toJSONString(entityList);
+                jedis.set(pageNo + "authorname" + pageSize, json);
+                jedis.expire(pageNo + "authorname" + pageSize, 2 * 60 * 60);
+                super.ResponseJson(response, json);
+                return;
+            } else {
+                result = jedis.get(pageNo + "picname" + pageSize);
+                if (result != null && !result.equals("[]")) {
+                    super.ResponseJson(response, result);
+                    return;
+                }
+                picturesEntity = pictureservice.selectByPicName(param);
+                String json = JSON.toJSONString(picturesEntity);
+                jedis.set(pageNo + "picname" + pageSize, json);
+                jedis.expire(pageNo + "picname" + pageSize, 2 * 60 * 60);
+                super.ResponseJson(response, json);
+                return;
+            }
         }
     }
 

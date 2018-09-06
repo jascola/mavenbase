@@ -45,4 +45,12 @@ public class Pictureservice {
     public PicturesEntity selectById(Integer id) {
         return dao.selectById(id);
     }
+
+    public Integer selectCount() {
+        return dao.selectCount();
+    }
+
+    public Integer selectCountByAuName(String authorname) {
+        return dao.selectCountByAuName(authorname);
+    }
 }

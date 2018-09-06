@@ -24,4 +24,8 @@ public interface PictureDao {
     List<PicturesEntity> selectAll(PicQueryDto dto);
 
     PicturesEntity selectById(Integer id);
+
+    Integer selectCount();
+
+    Integer selectCountByAuName(String authorname);
 }
