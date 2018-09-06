@@ -1,6 +1,7 @@
 package com.jascola.service;
 
 import com.jascola.dao.PictureDao;
+import com.jascola.dto.PicQueryDto;
 import com.jascola.entity.PicturesEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,8 +22,8 @@ public class Pictureservice {
         return dao.selectByPicName(picname);
     }
 
-    public List<PicturesEntity> selectByAuName(String authorname) {
-        return dao.selectByAuName(authorname);
+    public List<PicturesEntity> selectByAuName(PicQueryDto dto) {
+        return dao.selectByAuName(dto);
     }
 
     public int deleteByPicName(String picname) {
@@ -37,8 +38,11 @@ public class Pictureservice {
         return dao.update(entity);
     }
 
-    public List<PicturesEntity> selectAll() {
-        return dao.selectAll();
+    public List<PicturesEntity> selectAll(PicQueryDto dto) {
+        return dao.selectAll(dto);
     }
 
+    public PicturesEntity selectById(Integer id) {
+        return dao.selectById(id);
+    }
 }

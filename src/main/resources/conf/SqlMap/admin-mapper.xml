@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespcae原来指命名空间 -->
+<!-- 现在namespace指要映射给哪个接口 -->
+<mapper namespace="com.jascola.dao.AdminDao">
+
+    <select id="selectByPhone" parameterType="java.lang.String" resultType="com.jascola.entity.AdminEntity">
+        select phone ,password from admin
+        where phone = #{phone}
+    </select>
+
+    <update id="update" parameterType="com.jascola.entity.AdminEntity">
+        UPDATE admin set password=#{password} where phone = #{phone}
+    </update>
+
+</mapper>

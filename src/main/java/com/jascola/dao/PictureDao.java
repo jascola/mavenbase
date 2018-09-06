@@ -1,5 +1,6 @@
 package com.jascola.dao;
 
+import com.jascola.dto.PicQueryDto;
 import com.jascola.entity.PicturesEntity;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +13,7 @@ public interface PictureDao {
 
     PicturesEntity selectByPicName(String picname);
 
-    List<PicturesEntity> selectByAuName(String authorname);
+    List<PicturesEntity> selectByAuName(PicQueryDto dto);
 
     int deleteByPicName(String picname);
 
@@ -20,5 +21,7 @@ public interface PictureDao {
 
     int update(PicturesEntity entity);
 
-    List<PicturesEntity> selectAll();
+    List<PicturesEntity> selectAll(PicQueryDto dto);
+
+    PicturesEntity selectById(Integer id);
 }

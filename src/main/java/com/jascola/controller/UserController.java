@@ -2,6 +2,7 @@ package com.jascola.controller;
 
 
 import com.alibaba.fastjson.JSON;
+import com.jascola.dto.PicQueryDto;
 import com.jascola.entity.UserEntity;
 import com.jascola.service.UserService;
 import org.apache.log4j.Logger;
@@ -66,7 +67,7 @@ public class UserController extends BaseController {
     }
 
 
-    @RequestMapping(value = "login.html")
+    @RequestMapping(value = "/login.html")
     public void login(UserEntity entity, HttpServletResponse response) {
         List<String> messages = new ArrayList<String>();
         if (entity.getPassword() != null && !entity.getPassword().equals("")
@@ -110,6 +111,7 @@ public class UserController extends BaseController {
                         jedis.expire(result.getPhone(), 24 * 60 * 60);/*一天之内都可以访问，不用登录*/
 
                         Cookie cookie = new Cookie("token", base64Encoder.encode(result.getPhone().getBytes()));
+                        cookie.setMaxAge(24 * 60 * 60);
                         response.addCookie(cookie);
 
 
@@ -131,6 +133,20 @@ public class UserController extends BaseController {
         super.ResponseWarn(response, messages);
     }
 
+    @RequestMapping(value = "/getpic.html")
+    public void getPic(PicQueryDto dto, HttpServletResponse response, HttpServletRequest request) {
+        /*List<String> messages = new ArrayList<String>();
+        Jedis jedis = jedisPool.getResource();
+        String content = super.tokenAdminCheck(response, request, messages, jedisPool);
+        if (content == null) {
+            return;
+        }*/
+        String param = dto.getParam();
+        if(param==null||param.equals("")){
+            System.out.println(dto.getPageSize());
+        }
+    }
+
     /*测试*/
     @RequestMapping(value = "/test.html")
     public void test(HttpServletRequest request, HttpServletResponse response) {
@@ -141,7 +157,7 @@ public class UserController extends BaseController {
             return;
         }
         messages.add("成功访问");
-        UserEntity entity = JSON.parseObject(content,UserEntity.class);
+        UserEntity entity = JSON.parseObject(content, UserEntity.class);
         messages.add("欢迎！" + entity.getName());
         super.ResponseSuccess(response, messages);
     }

@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
+import redis.clients.jedis.JedisPool;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
@@ -20,12 +22,13 @@ import java.util.List;
 @RequestMapping(value = "/pic")
 public class PictureController extends BaseController {
     private static final Logger LOGGER = Logger.getLogger(PictureController.class);
-
+    private final JedisPool jedisPool;
     private final Pictureservice pictureservice;
 
     @Autowired
-    public PictureController(Pictureservice pictureservice) {
+    public PictureController(Pictureservice pictureservice,JedisPool jedisPool) {
         this.pictureservice = pictureservice;
+        this.jedisPool = jedisPool;
     }
 
     @Value("#{prop['resource.realpath']}")
@@ -42,8 +45,13 @@ public class PictureController extends BaseController {
 
 
     @RequestMapping(value = "/upload.html")
-    public void upload(HttpServletResponse response, PictureDto dto) {
+    public void upload(HttpServletResponse response, PictureDto dto, HttpServletRequest request) {
         List<String> messages = new ArrayList<String>();
+
+        String content = super.tokenCheck(response, request, messages, jedisPool);
+        if (content == null) {
+            return;
+        }
         List<MultipartFile> files = dto.getImages();
         PicturesEntity entity = new PicturesEntity();
         MultipartFile file = dto.getImage();

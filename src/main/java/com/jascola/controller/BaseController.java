@@ -103,4 +103,35 @@ public class BaseController {
         }
         return content;
     }
+
+    public String tokenAdminCheck(HttpServletResponse response, HttpServletRequest request, List<String> messages, JedisPool jedisPool){
+        String value = null;
+        String content=null;
+        for (Cookie c :
+                request.getCookies()) {
+            if (c.getName().equals("admintoken")) {
+                value = c.getValue();
+            }
+            if (value != null) {
+                Jedis jedis = jedisPool.getResource();
+                try {
+                    content = jedis.get(new String(base64Decoder.
+                            decodeBuffer(value)));
+                    if (content == null) {
+                        messages.add("登录过期，请重新登录！");
+                        ResponseError(response, messages);
+                        return null;
+                    }
+                } catch (Exception e) {
+                    log.error(e.getLocalizedMessage(), e);
+                }
+            }
+        }
+        if (value == null) {
+            messages.add("登录过期，请重新登录！");
+            ResponseError(response, messages);
+            return null;
+        }
+        return content;
+    }
 }
