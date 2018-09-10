@@ -148,7 +148,7 @@ public class UserController extends BaseController {
         /*判断用户是否登录*/
         List<String> messages = new ArrayList<String>();
         String content = super.tokenCheck(response, request, messages, jedisPool);
-        if (content == null) {
+        if (content == null||content.equals("[]")||content.equals("")) {
             return;
         }
 
@@ -212,18 +212,16 @@ public class UserController extends BaseController {
     }
 
     /*测试*/
-    @RequestMapping(value = "/test.html")
-    public void test(HttpServletRequest request, HttpServletResponse response) {
+    @RequestMapping(value = "/check.html")
+    public void check(HttpServletRequest request, HttpServletResponse response) {
         List<String> messages = new ArrayList<String>();
-
         String content = super.tokenCheck(response, request, messages, jedisPool);
-        if (content == null) {
+        if(content == null||content.equals("[]")||content.equals("")){
             return;
         }
-        messages.add("成功访问");
-        UserEntity entity = JSON.parseObject(content, UserEntity.class);
+        UserEntity entity = JSON.parseObject(content,UserEntity.class);
         messages.add("欢迎！" + entity.getName());
-        super.ResponseSuccess(response, messages);
+        super.ResponseSuccess(response,messages);
     }
 
 }
