@@ -24,11 +24,11 @@ public class PicturesEntity {
      */
     private String virtualdir;
     /**
-     * 物理目录路径
+     * 静态服务代理地址
      */
     private String indexpic;
     /**
-     * 静态服务代理地址
+     * 物理目录路径
      */
     private String indexrealdir;
     /**

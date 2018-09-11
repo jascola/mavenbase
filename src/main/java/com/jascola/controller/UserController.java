@@ -18,7 +18,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/user")
@@ -159,7 +161,7 @@ public class UserController extends BaseController {
         String result;
         Integer count;
         List<PicturesEntity> entityList;
-        PicturesEntity picturesEntity;
+        Map<String,Object> map= new HashMap<String,Object>();
         /*判断查询条件*/
         if (param == null || param.equals("")) {
             /*判断redis是否有值，有则从redis中取*/
@@ -173,7 +175,9 @@ public class UserController extends BaseController {
                 count = pictureservice.selectCount();
                 dto.setTotalCount(count);
                 entityList = pictureservice.selectAll(dto);
-                String json = JSON.toJSONString(entityList);
+                map.put("size",count);
+                map.put("list",entityList);
+                String json = JSON.toJSONString(map);
                 jedis.set(pageNo + "null" + pageSize, json);
                 jedis.expire(pageNo + "null" + pageSize, 2 * 60 * 60);
                 super.ResponseJson(response, json);
@@ -182,7 +186,7 @@ public class UserController extends BaseController {
         } else {
             /*判断查询条件是作者名还是相册名*/
             if ((count = pictureservice.selectCountByAuName(param)) != 0) {
-                result = jedis.get(pageNo + "authorname" + pageSize);
+                result = jedis.get(pageNo + param + pageSize);
                 if (result != null && !result.equals("[]")) {
                     super.ResponseJson(response, result);
                     return;
@@ -190,21 +194,25 @@ public class UserController extends BaseController {
                 dto.setTotalCount(count);
                 dto.setAuthorname(param);
                 entityList = pictureservice.selectByAuName(dto);
-                String json = JSON.toJSONString(entityList);
-                jedis.set(pageNo + "authorname" + pageSize, json);
-                jedis.expire(pageNo + "authorname" + pageSize, 2 * 60 * 60);
+                map.put("size",count);
+                map.put("list",entityList);
+                String json = JSON.toJSONString(map);
+                jedis.set(pageNo + param + pageSize, json);
+                jedis.expire(pageNo + param + pageSize, 2 * 60 * 60);
                 super.ResponseJson(response, json);
                 return;
             } else {
-                result = jedis.get(pageNo + "picname" + pageSize);
+                result = jedis.get(pageNo + param + pageSize);
                 if (result != null && !result.equals("[]")) {
                     super.ResponseJson(response, result);
                     return;
                 }
-                picturesEntity = pictureservice.selectByPicName(param);
-                String json = JSON.toJSONString(picturesEntity);
-                jedis.set(pageNo + "picname" + pageSize, json);
-                jedis.expire(pageNo + "picname" + pageSize, 2 * 60 * 60);
+                entityList = pictureservice.selectByPicName(param);
+                map.put("size",count);
+                map.put("list",entityList);
+                String json = JSON.toJSONString(map);
+                jedis.set(pageNo + param + pageSize, json);
+                jedis.expire(pageNo + param + pageSize, 2 * 60 * 60);
                 super.ResponseJson(response, json);
                 return;
             }

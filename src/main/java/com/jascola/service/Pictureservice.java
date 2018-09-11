@@ -18,7 +18,7 @@ public class Pictureservice {
         return dao.insert(entity);
     }
 
-    public PicturesEntity selectByPicName(String picname) {
+    public List<PicturesEntity> selectByPicName(String picname) {
         return dao.selectByPicName(picname);
     }
 
@@ -42,7 +42,7 @@ public class Pictureservice {
         return dao.selectAll(dto);
     }
 
-    public PicturesEntity selectById(Integer id) {
+    public List<PicturesEntity> selectById(Integer id) {
         return dao.selectById(id);
     }
 

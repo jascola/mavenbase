@@ -11,7 +11,7 @@ public interface PictureDao {
 
     int insert(PicturesEntity entity);
 
-    PicturesEntity selectByPicName(String picname);
+    List<PicturesEntity> selectByPicName(String picname);
 
     List<PicturesEntity> selectByAuName(PicQueryDto dto);
 
@@ -23,7 +23,7 @@ public interface PictureDao {
 
     List<PicturesEntity> selectAll(PicQueryDto dto);
 
-    PicturesEntity selectById(Integer id);
+    List<PicturesEntity> selectById(Integer id);
 
     Integer selectCount();
 
