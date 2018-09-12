@@ -45,18 +45,18 @@ public class PictureController extends BaseController {
 
 
     @RequestMapping(value = "/upload.html")
-    public void upload(HttpServletResponse response, PictureDto dto, HttpServletRequest request) {
+    public void upload(HttpServletResponse response, PictureDto formDate, HttpServletRequest request) {
         List<String> messages = new ArrayList<String>();
 
-        String content = super.tokenCheck(response, request, messages, jedisPool);
+        /*String content = super.tokenAdminCheck(response, request, messages, jedisPool);
         if (content == null) {
             return;
-        }
-        List<MultipartFile> files = dto.getImages();
+        }*/
+        MultipartFile[] files = formDate.getImages();
         PicturesEntity entity = new PicturesEntity();
-        MultipartFile file = dto.getImage();
-        if (null != files && files.size() > 0 && file != null) {
-            File f = new File(realpath + dto.getPicname());
+        MultipartFile file = formDate.getImage();
+        if (null != files && files.length > 0 && file != null) {
+            File f = new File(realpath + formDate.getPicname());
             if (!f.exists()) {
                 f.mkdir();
             }
@@ -88,16 +88,20 @@ public class PictureController extends BaseController {
                 LOGGER.error(e.getLocalizedMessage(), e);
             }
             try {
-                entity.setAuthorname(dto.getAuthorname());
-                entity.setCounts(files.size());
+                entity.setAuthorname(formDate.getAuthorname());
                 entity.setIndexpic(indexpath + fileName);
                 entity.setIndexrealdir(indexrealpath + fileName);
-                entity.setPicname(dto.getPicname());
-                entity.setRealdir(realpath + dto.getPicname());
-                entity.setVirtualdir(virpath + dto.getPicname());
-                entity.setTag(dto.getTag());
-                entity.setId(dto.getId());
-                pictureservice.insert(entity);
+                entity.setPicname(formDate.getPicname());
+                entity.setRealdir(realpath + formDate.getPicname());
+                entity.setVirtualdir(virpath + formDate.getPicname());
+                entity.setTag(formDate.getTag());
+                entity.setId(formDate.getId());
+                if(pictureservice.selectById(formDate.getId())!=null){
+                    pictureservice.update(entity);
+                }
+                else {
+                    pictureservice.insert(entity);
+                }
                 messages.add("上传成功");
                 super.ResponseSuccess(response, messages);
                 return;

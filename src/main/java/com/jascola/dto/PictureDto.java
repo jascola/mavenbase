@@ -12,7 +12,7 @@ public class PictureDto implements Serializable {
     private Integer id;
     private String authorname;
     private String tag;
-    private List<MultipartFile> images;
+    private MultipartFile[] images;
     private MultipartFile image;
 
     public Integer getId() {
@@ -47,11 +47,11 @@ public class PictureDto implements Serializable {
         this.tag = tag;
     }
 
-    public List<MultipartFile> getImages() {
+    public MultipartFile[] getImages() {
         return images;
     }
 
-    public void setImages(List<MultipartFile> images) {
+    public void setImages(MultipartFile[] images) {
         this.images = images;
     }
 

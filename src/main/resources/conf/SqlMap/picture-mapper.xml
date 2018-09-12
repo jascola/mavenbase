@@ -35,7 +35,7 @@
     </delete>
 
     <update id="update" parameterType="com.jascola.entity.PicturesEntity">
-        UPDATE pictures set picname = #{picname},authorname = #{authorname} , tag=#{tag},counts = #{counts}
+        UPDATE pictures set picname = #{picname},authorname = #{authorname} , tag=#{tag}
          WHERE flag = 1 AND id=#{id}
     </update>
 
