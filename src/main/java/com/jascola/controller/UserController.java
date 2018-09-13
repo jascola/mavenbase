@@ -103,6 +103,8 @@ public class UserController extends BaseController {
                 } catch (Exception e) {
                     LOGGER.error(e.getLocalizedMessage(), e);
                     return;
+                }finally {
+                    jedis.close();
                 }
             } else {
                 try {
@@ -121,9 +123,9 @@ public class UserController extends BaseController {
                             cookie.setMaxAge(24 * 60 * 60);
                             response.addCookie(cookie);
 
-
                             super.ResponseSuccess(response, messages);
                             System.out.println("从数据库中查");
+
                             return;
                         } else {
                             messages.add("账号或密码错误！");
@@ -138,6 +140,8 @@ public class UserController extends BaseController {
                 } catch (Exception e) {
                     LOGGER.error(e.getLocalizedMessage(), e);
                     return;
+                }finally {
+                    jedis.close();
                 }
             }
         }
@@ -167,6 +171,7 @@ public class UserController extends BaseController {
             /*判断redis是否有值，有则从redis中取*/
             result = jedis.get(pageNo + "null" + pageSize);
             if (result != null && !result.equals("[]")) {
+                jedis.close();
                 super.ResponseJson(response, result);
                 return;
             }
@@ -180,6 +185,7 @@ public class UserController extends BaseController {
                 String json = JSON.toJSONString(map);
                 jedis.set(pageNo + "null" + pageSize, json);
                 jedis.expire(pageNo + "null" + pageSize, 2 * 60 * 60);
+                jedis.close();
                 super.ResponseJson(response, json);
                 return;
             }
@@ -188,6 +194,7 @@ public class UserController extends BaseController {
             if ((count = pictureservice.selectCountByAuName(param)) != 0) {
                 result = jedis.get(pageNo + param + pageSize);
                 if (result != null && !result.equals("[]")) {
+                    jedis.close();
                     super.ResponseJson(response, result);
                     return;
                 }
@@ -199,11 +206,13 @@ public class UserController extends BaseController {
                 String json = JSON.toJSONString(map);
                 jedis.set(pageNo + param + pageSize, json);
                 jedis.expire(pageNo + param + pageSize, 2 * 60 * 60);
+                jedis.close();
                 super.ResponseJson(response, json);
                 return;
             } else {
                 result = jedis.get(pageNo + param + pageSize);
                 if (result != null && !result.equals("[]")) {
+                    jedis.close();
                     super.ResponseJson(response, result);
                     return;
                 }
@@ -213,6 +222,7 @@ public class UserController extends BaseController {
                 String json = JSON.toJSONString(map);
                 jedis.set(pageNo + param + pageSize, json);
                 jedis.expire(pageNo + param + pageSize, 2 * 60 * 60);
+                jedis.close();
                 super.ResponseJson(response, json);
                 return;
             }

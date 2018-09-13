@@ -59,6 +59,8 @@ public class AdminController extends BaseController {
                 } catch (Exception e) {
                     LOGGER.error(e.getLocalizedMessage(), e);
                     return;
+                }finally {
+                    jedis.close();
                 }
             } else {
                 try {
@@ -88,6 +90,8 @@ public class AdminController extends BaseController {
                 } catch (Exception e) {
                     LOGGER.error(e.getLocalizedMessage(), e);
                     return;
+                }finally {
+                    jedis.close();
                 }
             }
         }
@@ -98,18 +102,21 @@ public class AdminController extends BaseController {
     @RequestMapping(value = "/logout.html")
     public void logout(HttpServletRequest request,HttpServletResponse response){
         List<String> messages = new ArrayList<String>();
+        Jedis jedis = jedisPool.getResource();
         String content = super.tokenAdminCheck(response, request, messages, jedisPool);
         if (content == null) {
             return;
         }
         try {
             AdminEntity entity = JSON.parseObject(content, AdminEntity.class);
-            Jedis jedis = jedisPool.getResource();
             jedis.del(entity.getPhone());
             messages.add("成功登出");
+            jedis.close();
             super.ResponseSuccess(response,messages);
         }catch (Exception e){
             LOGGER.error(e.getLocalizedMessage(),e);
+        }finally {
+            jedis.close();
         }
     }
 

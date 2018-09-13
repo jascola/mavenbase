@@ -32,6 +32,7 @@ public class BaseController {
     private static final String WARN = "warn";
     protected BASE64Encoder base64Encoder = new BASE64Encoder();
     protected BASE64Decoder base64Decoder = new BASE64Decoder();
+
     public BaseController() {
     }
 
@@ -53,29 +54,29 @@ public class BaseController {
     }
 
     public void ResponseSuccess(HttpServletResponse response, List<String> messages) {
-        Map<String,Object> map = new HashMap<String, Object>();
-        map.put("status",SUCCESS);
-        map.put("messages",messages);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("status", SUCCESS);
+        map.put("messages", messages);
         this.ajaxResponse(response, JSON.toJSONString(map), "text/html");
     }
 
     public void ResponseError(HttpServletResponse response, List<String> messages) {
-        Map<String,Object> map = new HashMap<String, Object>();
-        map.put("status",ERROR);
-        map.put("messages",messages);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("status", ERROR);
+        map.put("messages", messages);
         this.ajaxResponse(response, JSON.toJSONString(map), "text/html");
     }
 
     public void ResponseWarn(HttpServletResponse response, List<String> messages) {
-        Map<String,Object> map = new HashMap<String, Object>();
-        map.put("status",WARN);
-        map.put("messages",messages);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("status", WARN);
+        map.put("messages", messages);
         this.ajaxResponse(response, JSON.toJSONString(map), "text/html");
     }
 
-    public String tokenCheck(HttpServletResponse response, HttpServletRequest request, List<String> messages, JedisPool jedisPool){
+    public String tokenCheck(HttpServletResponse response, HttpServletRequest request, List<String> messages, JedisPool jedisPool) {
         String value = null;
-        String content=null;
+        String content = null;
         for (Cookie c :
                 request.getCookies()) {
             if (c.getName().equals("token")) {
@@ -84,7 +85,7 @@ public class BaseController {
             if (value != null) {
                 Jedis jedis = jedisPool.getResource();
                 try {
-                     content = jedis.get(new String(base64Decoder.
+                    content = jedis.get(new String(base64Decoder.
                             decodeBuffer(value)));
                     if (content == null) {
                         messages.add("时间失效");
@@ -93,6 +94,8 @@ public class BaseController {
                     }
                 } catch (Exception e) {
                     log.error(e.getLocalizedMessage(), e);
+                } finally {
+                    jedis.close();
                 }
             }
         }
@@ -104,9 +107,9 @@ public class BaseController {
         return content;
     }
 
-    public String tokenAdminCheck(HttpServletResponse response, HttpServletRequest request, List<String> messages, JedisPool jedisPool){
+    public String tokenAdminCheck(HttpServletResponse response, HttpServletRequest request, List<String> messages, JedisPool jedisPool) {
         String value = null;
-        String content=null;
+        String content = null;
         for (Cookie c :
                 request.getCookies()) {
             if (c.getName().equals("admintoken")) {
@@ -124,6 +127,8 @@ public class BaseController {
                     }
                 } catch (Exception e) {
                     log.error(e.getLocalizedMessage(), e);
+                } finally {
+                    jedis.close();
                 }
             }
         }
