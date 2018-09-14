@@ -48,7 +48,7 @@ DROP TABLE IF EXISTS `pictures`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `pictures` (
-  `id` int(11) NOT NULL COMMENT '主键',
+  `id` varchar(100) NOT NULL COMMENT '主键',
   `picname` varchar(50) DEFAULT NULL COMMENT '相册名',
   `authorname` varchar(30) DEFAULT NULL COMMENT '作者名',
   `tag` varchar(100) DEFAULT NULL COMMENT '标签',

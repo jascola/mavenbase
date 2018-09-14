@@ -21,21 +21,26 @@
         WHERE flag = 1 AND authorname = #{authorname} limit  #{startRow},#{pageSize}
     </select>
 
-    <select id="selectById" resultType="com.jascola.entity.PicturesEntity" parameterType="java.lang.Integer">
+    <select id="selectById" resultType="com.jascola.entity.PicturesEntity" parameterType="java.lang.String">
         SELECT id, picname,authorname,tag,realdir,virtualdir,indexpic,indexrealdir,counts from pictures WHERE id=#{id}
     </select>
 
 
     <delete id="deleteByPicName" parameterType="java.lang.String" >
-        UPDATE pictures SET flag = 0  WHERE picname = #{picname}
+        delete from pictures  WHERE picname = #{picname}
     </delete>
 
     <delete id="deleteByAuName" parameterType="java.lang.String" >
-        UPDATE pictures SET flag = 0 WHERE authorname = #{authorname}
+        delete from pictures WHERE authorname = #{authorname}
+    </delete>
+
+    <delete id="deleteById" parameterType="java.lang.String" >
+        delete from pictures where id=#{id}
     </delete>
 
     <update id="update" parameterType="com.jascola.entity.PicturesEntity">
-        UPDATE pictures set picname = #{picname},authorname = #{authorname} , tag=#{tag}
+        UPDATE pictures set picname = #{picname},authorname = #{authorname} , tag=#{tag},realdir=#{realdir},
+        virtualdir=#{virtualdir},indexpic=#{indexpic},indexrealdir=#{indexrealdir}
          WHERE flag = 1 AND id=#{id}
     </update>
 

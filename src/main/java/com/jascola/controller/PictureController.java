@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
+import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,7 +48,7 @@ public class PictureController extends BaseController {
     @RequestMapping(value = "/upload.html")
     public void upload(HttpServletResponse response, PictureDto formDate, HttpServletRequest request) {
         List<String> messages = new ArrayList<String>();
-
+        Jedis jedis = jedisPool.getResource();
         /*String content = super.tokenAdminCheck(response, request, messages, jedisPool);
         if (content == null) {
             return;
@@ -96,11 +97,14 @@ public class PictureController extends BaseController {
                 entity.setVirtualdir(virpath + formDate.getPicname());
                 entity.setTag(formDate.getTag());
                 entity.setId(formDate.getId());
-                if(pictureservice.selectById(formDate.getId())!=null){
+                entity.setCounts(formDate.getCounts());
+                if(pictureservice.selectById(formDate.getId()).size()>0){
                     pictureservice.update(entity);
+                    jedis.flushDB();
                 }
                 else {
                     pictureservice.insert(entity);
+                    jedis.flushDB();
                 }
                 messages.add("上传成功");
                 super.ResponseSuccess(response, messages);
@@ -110,9 +114,32 @@ public class PictureController extends BaseController {
                 super.ResponseError(response, messages);
                 LOGGER.error(e.getLocalizedMessage(), e);
                 return;
+            }finally {
+                jedis.close();
             }
         }
-        messages.add("文件不能为空");
+        messages.add("文件不能为空或重复！");
         super.ResponseError(response, messages);
+    }
+    @RequestMapping(value = "deletepic.html")
+    public void deletePic(String id,HttpServletResponse response,HttpServletRequest request){
+        List<String> messages = new ArrayList<String>();
+        Jedis jedis = jedisPool.getResource();
+        /*String content = super.tokenAdminCheck(response, request, messages, jedisPool);
+        if (content == null) {
+            return;
+        }*/
+        try{
+            pictureservice.deleteById(id);
+            messages.add("删除相册成功");
+            jedis.flushDB();
+            super.ResponseSuccess(response,messages);
+        }catch (Exception e){
+            messages.add("删除相册失败");
+            super.ResponseError(response,messages);
+            LOGGER.error(e.getLocalizedMessage(),e);
+        }finally {
+            jedis.close();
+        }
     }
 }

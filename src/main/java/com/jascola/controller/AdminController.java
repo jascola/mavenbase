@@ -2,6 +2,7 @@ package com.jascola.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.jascola.entity.AdminEntity;
+import com.jascola.entity.UserEntity;
 import com.jascola.service.AdminService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ public class AdminController extends BaseController {
 
             /*先从redis中查*/
             Jedis jedis = jedisPool.getResource();
+            jedis.select(15);
             String content = jedis.get(entity.getPhone());
 
             if (content != null) {
@@ -48,6 +50,9 @@ public class AdminController extends BaseController {
                     if (pwd.equals(entity.getPassword())) {
                         messages.add("登录成功！");
                         messages.add("欢迎！管理员");
+                        Cookie cookie = new Cookie("admintoken", base64Encoder.encode(entity.getPhone().getBytes()));
+                        cookie.setMaxAge(2 * 60 * 60);
+                        response.addCookie(cookie);
                         super.ResponseSuccess(response, messages);
                         System.out.println("从redis里查");
                         return;
@@ -59,7 +64,7 @@ public class AdminController extends BaseController {
                 } catch (Exception e) {
                     LOGGER.error(e.getLocalizedMessage(), e);
                     return;
-                }finally {
+                } finally {
                     jedis.close();
                 }
             } else {
@@ -90,7 +95,7 @@ public class AdminController extends BaseController {
                 } catch (Exception e) {
                     LOGGER.error(e.getLocalizedMessage(), e);
                     return;
-                }finally {
+                } finally {
                     jedis.close();
                 }
             }
@@ -100,7 +105,7 @@ public class AdminController extends BaseController {
     }
 
     @RequestMapping(value = "/logout.html")
-    public void logout(HttpServletRequest request,HttpServletResponse response){
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
         List<String> messages = new ArrayList<String>();
         Jedis jedis = jedisPool.getResource();
         String content = super.tokenAdminCheck(response, request, messages, jedisPool);
@@ -112,12 +117,22 @@ public class AdminController extends BaseController {
             jedis.del(entity.getPhone());
             messages.add("成功登出");
             jedis.close();
-            super.ResponseSuccess(response,messages);
-        }catch (Exception e){
-            LOGGER.error(e.getLocalizedMessage(),e);
-        }finally {
+            super.ResponseSuccess(response, messages);
+        } catch (Exception e) {
+            LOGGER.error(e.getLocalizedMessage(), e);
+        } finally {
             jedis.close();
         }
     }
 
+    @RequestMapping(value = "/check.html")
+    public void check(HttpServletRequest request, HttpServletResponse response) {
+        List<String> messages = new ArrayList<String>();
+        String content = super.tokenAdminCheck(response, request, messages, jedisPool);
+        if (content == null || content.equals("[]") || content.equals("")) {
+            return;
+        }
+        messages.add("欢迎！管理员");
+        super.ResponseSuccess(response, messages);
+    }
 }

@@ -84,6 +84,7 @@ public class BaseController {
             }
             if (value != null) {
                 Jedis jedis = jedisPool.getResource();
+                jedis.select(15);
                 try {
                     content = jedis.get(new String(base64Decoder.
                             decodeBuffer(value)));
@@ -117,6 +118,7 @@ public class BaseController {
             }
             if (value != null) {
                 Jedis jedis = jedisPool.getResource();
+                jedis.select(15);
                 try {
                     content = jedis.get(new String(base64Decoder.
                             decodeBuffer(value)));

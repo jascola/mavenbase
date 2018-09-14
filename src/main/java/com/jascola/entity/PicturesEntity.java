@@ -2,7 +2,7 @@ package com.jascola.entity;
 
 public class PicturesEntity {
 
-    private Integer id;
+    private String id;
     /**
      * 相册名
      */
@@ -44,11 +44,11 @@ public class PicturesEntity {
         this.counts = counts;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 

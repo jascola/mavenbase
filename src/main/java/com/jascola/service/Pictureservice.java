@@ -34,6 +34,10 @@ public class Pictureservice {
         return dao.deleteByAuName(authorname);
     }
 
+    public int deleteById(String id) {
+        return dao.deleteById(id);
+    }
+
     public int update(PicturesEntity entity) {
         return dao.update(entity);
     }
@@ -42,7 +46,7 @@ public class Pictureservice {
         return dao.selectAll(dto);
     }
 
-    public List<PicturesEntity> selectById(Integer id) {
+    public List<PicturesEntity> selectById(String id) {
         return dao.selectById(id);
     }
 

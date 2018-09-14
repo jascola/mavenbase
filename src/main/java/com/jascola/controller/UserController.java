@@ -81,6 +81,7 @@ public class UserController extends BaseController {
 
             /*先从redis中查*/
             Jedis jedis = jedisPool.getResource();
+            jedis.select(15);
             String content = jedis.get(entity.getPhone());
 
             if (content != null) {
@@ -92,6 +93,9 @@ public class UserController extends BaseController {
                     if (pwd.equals(entity.getPassword())) {
                         messages.add("登录成功！");
                         messages.add("欢迎！" + jedisuser.getName());
+                        Cookie cookie = new Cookie("token", base64Encoder.encode(entity.getPhone().getBytes()));
+                        cookie.setMaxAge(2 * 60 * 60);
+                        response.addCookie(cookie);
                         super.ResponseSuccess(response, messages);
                         System.out.println("从redis里查");
                         return;
@@ -103,7 +107,7 @@ public class UserController extends BaseController {
                 } catch (Exception e) {
                     LOGGER.error(e.getLocalizedMessage(), e);
                     return;
-                }finally {
+                } finally {
                     jedis.close();
                 }
             } else {
@@ -140,7 +144,7 @@ public class UserController extends BaseController {
                 } catch (Exception e) {
                     LOGGER.error(e.getLocalizedMessage(), e);
                     return;
-                }finally {
+                } finally {
                     jedis.close();
                 }
             }
@@ -151,13 +155,6 @@ public class UserController extends BaseController {
 
     @RequestMapping(value = "/getpic.html")
     public void getPic(PicQueryDto dto, HttpServletResponse response, HttpServletRequest request) {
-        /*判断用户是否登录*/
-        List<String> messages = new ArrayList<String>();
-        String content = super.tokenCheck(response, request, messages, jedisPool);
-        if (content == null||content.equals("[]")||content.equals("")) {
-            return;
-        }
-
         Jedis jedis = jedisPool.getResource();
         String param = dto.getParam();
         String pageSize = String.valueOf(dto.getPageSize());
@@ -165,7 +162,7 @@ public class UserController extends BaseController {
         String result;
         Integer count;
         List<PicturesEntity> entityList;
-        Map<String,Object> map= new HashMap<String,Object>();
+        Map<String, Object> map = new HashMap<String, Object>();
         /*判断查询条件*/
         if (param == null || param.equals("")) {
             /*判断redis是否有值，有则从redis中取*/
@@ -180,8 +177,8 @@ public class UserController extends BaseController {
                 count = pictureservice.selectCount();
                 dto.setTotalCount(count);
                 entityList = pictureservice.selectAll(dto);
-                map.put("size",count);
-                map.put("list",entityList);
+                map.put("size", count);
+                map.put("list", entityList);
                 String json = JSON.toJSONString(map);
                 jedis.set(pageNo + "null" + pageSize, json);
                 jedis.expire(pageNo + "null" + pageSize, 2 * 60 * 60);
@@ -201,8 +198,8 @@ public class UserController extends BaseController {
                 dto.setTotalCount(count);
                 dto.setAuthorname(param);
                 entityList = pictureservice.selectByAuName(dto);
-                map.put("size",count);
-                map.put("list",entityList);
+                map.put("size", count);
+                map.put("list", entityList);
                 String json = JSON.toJSONString(map);
                 jedis.set(pageNo + param + pageSize, json);
                 jedis.expire(pageNo + param + pageSize, 2 * 60 * 60);
@@ -217,8 +214,8 @@ public class UserController extends BaseController {
                     return;
                 }
                 entityList = pictureservice.selectByPicName(param);
-                map.put("size",count);
-                map.put("list",entityList);
+                map.put("size", count);
+                map.put("list", entityList);
                 String json = JSON.toJSONString(map);
                 jedis.set(pageNo + param + pageSize, json);
                 jedis.expire(pageNo + param + pageSize, 2 * 60 * 60);
@@ -234,12 +231,12 @@ public class UserController extends BaseController {
     public void check(HttpServletRequest request, HttpServletResponse response) {
         List<String> messages = new ArrayList<String>();
         String content = super.tokenCheck(response, request, messages, jedisPool);
-        if(content == null||content.equals("[]")||content.equals("")){
+        if (content == null || content.equals("[]") || content.equals("")) {
             return;
         }
-        UserEntity entity = JSON.parseObject(content,UserEntity.class);
+        UserEntity entity = JSON.parseObject(content, UserEntity.class);
         messages.add("欢迎！" + entity.getName());
-        super.ResponseSuccess(response,messages);
+        super.ResponseSuccess(response, messages);
     }
 
 }

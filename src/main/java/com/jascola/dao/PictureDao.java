@@ -17,13 +17,15 @@ public interface PictureDao {
 
     int deleteByPicName(String picname);
 
+    int deleteById(String id);
+
     int deleteByAuName(String authorname);
 
     int update(PicturesEntity entity);
 
     List<PicturesEntity> selectAll(PicQueryDto dto);
 
-    List<PicturesEntity> selectById(Integer id);
+    List<PicturesEntity> selectById(String id);
 
     Integer selectCount();
 

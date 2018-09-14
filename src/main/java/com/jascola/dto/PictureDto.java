@@ -9,17 +9,26 @@ public class PictureDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private String picname;
-    private Integer id;
+    private String id;
     private String authorname;
     private String tag;
+    private Integer counts;
     private MultipartFile[] images;
     private MultipartFile image;
 
-    public Integer getId() {
+    public Integer getCounts() {
+        return counts;
+    }
+
+    public void setCounts(Integer counts) {
+        this.counts = counts;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
