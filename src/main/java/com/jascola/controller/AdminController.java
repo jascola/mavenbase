@@ -2,7 +2,6 @@ package com.jascola.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.jascola.entity.AdminEntity;
-import com.jascola.entity.UserEntity;
 import com.jascola.service.AdminService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

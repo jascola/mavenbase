@@ -17,10 +17,7 @@ import redis.clients.jedis.JedisPool;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "/user")
@@ -239,4 +236,46 @@ public class UserController extends BaseController {
         super.ResponseSuccess(response, messages);
     }
 
+    @RequestMapping(value = "/tagquery.html")
+    public void querytag(HttpServletResponse response, String tag, PicQueryDto dto) {
+        Jedis jedis = jedisPool.getResource();
+        String pageSize = String.valueOf(dto.getPageSize());
+        String pageNo = String.valueOf(dto.getPageNo());
+        String result;
+        Integer count;
+        List<PicturesEntity> entityList;
+        Map<String, Object> map = new HashMap<String, Object>();
+        /*判断redis是否有值，有则从redis中取*/
+        result = jedis.get(pageNo + tag + pageSize);
+        if (result != null && !result.equals("[]")) {
+            jedis.close();
+            super.ResponseJson(response, result);
+            return;
+        }
+        /*没有值去查数据库，并将数据存入redis*/
+        else {
+            count = pictureservice.selectCount();
+            dto.setTotalCount(count);
+            entityList = pictureservice.selectAll(dto);
+            List<PicturesEntity> lists = this.getList(entityList,tag);
+            map.put("size", lists.size());
+            map.put("list", lists);
+            String json = JSON.toJSONString(map);
+            jedis.set(pageNo + tag + pageSize, json);
+            jedis.expire(pageNo + tag + pageSize, 2 * 60 * 60);
+            jedis.close();
+            super.ResponseJson(response, json);
+            return;
+        }
+    }
+
+    private List<PicturesEntity> getList(List<PicturesEntity> entities, String tag) {
+        List<PicturesEntity> result = new ArrayList<PicturesEntity>();
+        for (PicturesEntity entity : entities) {
+            if (entity.getTag().contains(tag)) {
+                result.add(entity);
+            }
+        }
+        return result;
+    }
 }
