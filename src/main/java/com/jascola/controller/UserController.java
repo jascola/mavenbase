@@ -261,8 +261,10 @@ public class UserController extends BaseController {
             map.put("size", lists.size());
             map.put("list", lists);
             String json = JSON.toJSONString(map);
-            jedis.set(pageNo + tag + pageSize, json);
-            jedis.expire(pageNo + tag + pageSize, 2 * 60 * 60);
+            if(lists.size()>0) {
+                jedis.set(pageNo + tag + pageSize, json);
+                jedis.expire(pageNo + tag + pageSize, 2 * 60 * 60);
+            }
             jedis.close();
             super.ResponseJson(response, json);
             return;
