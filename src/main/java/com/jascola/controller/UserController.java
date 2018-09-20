@@ -257,11 +257,11 @@ public class UserController extends BaseController {
             count = pictureservice.selectCount();
             dto.setTotalCount(count);
             entityList = pictureservice.selectAll(dto);
-            List<PicturesEntity> lists = this.getList(entityList,tag);
+            List<PicturesEntity> lists = this.getList(entityList, tag);
             map.put("size", lists.size());
             map.put("list", lists);
             String json = JSON.toJSONString(map);
-            if(lists.size()>0) {
+            if (lists.size() > 0) {
                 jedis.set(pageNo + tag + pageSize, json);
                 jedis.expire(pageNo + tag + pageSize, 2 * 60 * 60);
             }
@@ -270,6 +270,31 @@ public class UserController extends BaseController {
             return;
         }
     }
+
+    @RequestMapping(value = "/selectid.html")
+    public void selectId(String id, HttpServletResponse response) {
+        Jedis jedis = jedisPool.getResource();
+        String result;
+        List<PicturesEntity> entityList;
+        /*判断redis是否有值，有则从redis中取*/
+        result = jedis.get(id);
+        if (result != null && !result.equals("[]")) {
+            jedis.close();
+            super.ResponseJson(response, result);
+            return;
+        }
+        /*没有值去查数据库，并将数据存入redis*/
+        else {
+            entityList = pictureservice.selectById(id);
+            String json = JSON.toJSONString(entityList);
+            jedis.set(id, json);
+            jedis.expire(id, 2 * 60 * 60);
+            jedis.close();
+            super.ResponseJson(response, json);
+            return;
+        }
+    }
+
 
     private List<PicturesEntity> getList(List<PicturesEntity> entities, String tag) {
         List<PicturesEntity> result = new ArrayList<PicturesEntity>();
