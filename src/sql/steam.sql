@@ -93,5 +93,23 @@ CREATE TABLE `acg_content`(
   magnet VARCHAR(100) COMMENT '磁力链接'
 )ENGINE =InnoDB DEFAULT CHARSET =utf8;
 
+/*收藏表*/
+DROP TABLE IF EXISTS `collection`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `collection`(
+  `phone` varchar(20) DEFAULT NULL COMMENT '手机号码',
+  `id` varchar(100) NOT NULL COMMENT '相册id',
+  `picname` varchar(50) DEFAULT NULL COMMENT '相册名',
+  `authorname` varchar(30) DEFAULT NULL COMMENT '作者名',
+  `tag` varchar(100) DEFAULT NULL COMMENT '标签',
+  `realdir` varchar(100) DEFAULT NULL COMMENT '实际物理路径',
+  `virtualdir` varchar(100) DEFAULT NULL COMMENT '虚拟路径',
+  `indexpic` varchar(100) DEFAULT NULL COMMENT '封面虚拟路径',
+  `indexrealdir` varchar(100) DEFAULT NULL COMMENT '封面物理路径',
+  `counts` int default null comment '相片个数',
+  `flag` int default null comment '逻辑删除标志',
+  primary key(`phone`,`id`)
 
+)ENGINE =InnoDB DEFAULT CHARSET =utf8;
 
