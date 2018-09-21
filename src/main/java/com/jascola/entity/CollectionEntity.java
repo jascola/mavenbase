@@ -1,6 +1,9 @@
 package com.jascola.entity;
 
-public class CollectionEntity {
+import java.io.Serializable;
+
+public class CollectionEntity implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String phone;
 
     private String id;

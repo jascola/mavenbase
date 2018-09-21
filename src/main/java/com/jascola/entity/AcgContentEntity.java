@@ -1,12 +1,14 @@
 package com.jascola.entity;
 
+import java.io.Serializable;
 import java.sql.Time;
 
 
 /**
  * 里番合集
  */
-public class AcgContentEntity {
+public class AcgContentEntity implements Serializable {
+    private static final long serialVersionUID = 1L;
     /**
      * 合集名称
      */

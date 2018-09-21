@@ -1,9 +1,12 @@
 package com.jascola.entity;
 
+import java.io.Serializable;
+
 /**
  * lifan
  */
-public class AcgEntity {
+public class AcgEntity implements Serializable {
+    private static final long serialVersionUID = 1L;
     /**
      * 合集名称(属于哪个合集)
      */

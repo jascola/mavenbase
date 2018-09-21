@@ -1,6 +1,9 @@
 package com.jascola.entity;
 
-public class UserEntity {
+import java.io.Serializable;
+
+public class UserEntity implements Serializable {
+    private static final long serialVersionUID = 1L;
     /**
      * 电话号码
      */

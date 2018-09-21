@@ -1,7 +1,9 @@
 package com.jascola.entity;
 
-public class PicturesEntity {
+import java.io.Serializable;
 
+public class PicturesEntity implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String id;
     /**
      * 相册名

@@ -1,9 +1,12 @@
 package com.jascola.entity;
 
+import java.io.Serializable;
+
 /**
  * 管理员
  */
-public class AdminEntity {
+public class AdminEntity implements Serializable {
+    private static final long serialVersionUID = 1L;
     /**
      * 电话号码
      */

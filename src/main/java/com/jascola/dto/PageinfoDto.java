@@ -1,6 +1,9 @@
 package com.jascola.dto;
 
-public class PageinfoDto {
+import java.io.Serializable;
+
+public class PageinfoDto implements Serializable {
+    private static final long serialVersionUID = 1L;
     private Integer totalCount;//总记录条数
 
     private Integer totalPage;//总页码
