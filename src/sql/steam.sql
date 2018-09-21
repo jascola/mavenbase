@@ -129,7 +129,7 @@ DROP TABLE IF EXISTS `collection`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `collection` (
-  `phone` varchar(20) DEFAULT NULL
+  `phone` varchar(20)  NOT NULL
   COMMENT '手机号码',
   `id`    varchar(100) NOT NULL
   COMMENT '相册id',
