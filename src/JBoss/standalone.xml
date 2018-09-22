@@ -98,9 +98,20 @@
         <subsystem xmlns="urn:jboss:domain:configadmin:1.0"/>
         <subsystem xmlns="urn:jboss:domain:datasources:1.0">
             <datasources>
-                <datasource jndi-name="java:jboss/jdbc/mysql" pool-name="jdbc/mysql" enabled="true" use-java-context="true">
+                <datasource jndi-name="java:jboss/jdbc/mysql" pool-name="jdbc/mysql" enabled="true" use-ccm="false" jta="false">
                     <connection-url>jdbc:mysql://localhost:3306/steam?useUnicode=true&amp;characterEncoding=utf-8</connection-url>
                     <driver>mysql</driver>
+                    <pool>
+                        <min-pool-size>5</min-pool-size>
+                        <max-pool-size>20</max-pool-size>
+                    </pool>
+                    <validation>
+                        <validate-on-match>false</validate-on-match>
+                        <background-validation>false</background-validation>
+                    </validation>
+                    <statement>
+                        <share-prepared-statements>false</share-prepared-statements>
+                    </statement>
                     <security>
                         <user-name>root</user-name>
                         <password>123456</password>
