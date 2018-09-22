@@ -34,8 +34,13 @@
         <property name="maxWaitMillis" value="${jdbc.maxWait}"/>
     </bean>-->
     <!--创建一个数据源-->
+    <!--tomcat jndi配置-->
     <jee:jndi-lookup id="dataSource" jndi-name="jdbc/mysql"
                      proxy-interface="javax.sql.DataSource" lookup-on-startup="true"/>
+
+    <!--jBoss jndi配置-->
+    <!--<jee:jndi-lookup id="dataSource" jndi-name="java:jboss/jdbc/mysql"
+                     proxy-interface="javax.sql.DataSource" lookup-on-startup="true"/>-->
 
     <!--配置mybatis映射路径-->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
