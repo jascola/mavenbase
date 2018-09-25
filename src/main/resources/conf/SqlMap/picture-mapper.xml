@@ -55,4 +55,8 @@
     <select id="selectCountByAuName"  resultType="java.lang.Integer">
         SELECT count(*) FROM pictures WHERE flag = 1 and authorname = #{authorname}
     </select>
+
+    <select id="checkCollected"  resultType="com.jascola.entity.PicturesEntity" parameterType="java.lang.String">
+        SELECT * FROM pictures WHERE id in(SELECT id FROM collection WHERE phone = #{phone});
+    </select>
 </mapper>

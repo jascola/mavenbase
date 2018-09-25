@@ -57,4 +57,8 @@ public class Pictureservice {
     public Integer selectCountByAuName(String authorname) {
         return dao.selectCountByAuName(authorname);
     }
+
+    public List<PicturesEntity> checkCollected(String phone){
+        return dao.checkCollected(phone);
+    }
 }

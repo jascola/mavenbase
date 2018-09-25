@@ -30,4 +30,6 @@ public interface PictureDao {
     Integer selectCount();
 
     Integer selectCountByAuName(String authorname);
+
+    List<PicturesEntity> checkCollected(String phone);
 }

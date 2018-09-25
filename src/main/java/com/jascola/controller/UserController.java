@@ -36,7 +36,7 @@ public class UserController extends BaseController {
         this.pictureservice = pictureservice;
     }
 
-
+    /*注册*/
     @RequestMapping(value = "/regist.html")
     public void regist(UserEntity entity, HttpServletResponse response) {
         List<String> messages = new ArrayList<String>();
@@ -69,7 +69,7 @@ public class UserController extends BaseController {
         super.ResponseWarn(response, messages);
     }
 
-
+    /*登录*/
     @RequestMapping(value = "/login.html")
     public void login(UserEntity entity, HttpServletResponse response) {
         List<String> messages = new ArrayList<String>();
@@ -150,6 +150,7 @@ public class UserController extends BaseController {
         super.ResponseWarn(response, messages);
     }
 
+    /*根据查询条件获取相册*/
     @RequestMapping(value = "/getpic.html")
     public void getPic(PicQueryDto dto, HttpServletResponse response, HttpServletRequest request) {
         Jedis jedis = jedisPool.getResource();
@@ -223,7 +224,7 @@ public class UserController extends BaseController {
         }
     }
 
-    /*测试*/
+    /*判断是否登录*/
     @RequestMapping(value = "/check.html")
     public void check(HttpServletRequest request, HttpServletResponse response) {
         List<String> messages = new ArrayList<String>();
@@ -236,6 +237,7 @@ public class UserController extends BaseController {
         super.ResponseSuccess(response, messages);
     }
 
+    /*用标签查询相册*/
     @RequestMapping(value = "/tagquery.html")
     public void querytag(HttpServletResponse response, String tag, PicQueryDto dto) {
         Jedis jedis = jedisPool.getResource();
@@ -271,6 +273,7 @@ public class UserController extends BaseController {
         }
     }
 
+    /*根据id查询相册*/
     @RequestMapping(value = "/selectid.html")
     public void selectId(String id, HttpServletResponse response) {
         Jedis jedis = jedisPool.getResource();
@@ -295,6 +298,24 @@ public class UserController extends BaseController {
         }
     }
 
+    /*判断是否收藏了相册*/
+    @RequestMapping(value = "checkcollected.html")
+    public void checkCollected(String id,HttpServletResponse response,HttpServletRequest request){
+        List<String> messages = new ArrayList<String>();
+        String content = super.tokenCheck(response, request, messages, jedisPool);
+        UserEntity entity = JSON.parseObject(content, UserEntity.class);
+        List<PicturesEntity> lists = pictureservice.checkCollected(entity.getPhone());
+        for(PicturesEntity pic:lists){
+            if(pic.getId().equals(id)){
+                messages.add("el-icon-star-on");
+                break;
+            }
+        }
+        if (messages.size()==0){
+            messages.add("el-icon-star-off");
+        }
+        super.ResponseJson(response,JSON.toJSONString(messages));
+    }
 
     private List<PicturesEntity> getList(List<PicturesEntity> entities, String tag) {
         List<PicturesEntity> result = new ArrayList<PicturesEntity>();
