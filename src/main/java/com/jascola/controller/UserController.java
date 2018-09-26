@@ -239,17 +239,18 @@ public class UserController extends BaseController {
 
     /*用标签查询相册*/
     @RequestMapping(value = "/tagquery.html")
-    public void querytag(HttpServletResponse response, String tag, PicQueryDto dto) {
+    public void querytag(HttpServletResponse response,PicQueryDto dto) {
         Jedis jedis = jedisPool.getResource();
         String pageSize = String.valueOf(dto.getPageSize());
         String pageNo = String.valueOf(dto.getPageNo());
+        String param = dto.getParam();
         String result;
         Integer count;
         List<PicturesEntity> entityList;
         Map<String, Object> map = new HashMap<String, Object>();
         /*判断redis是否有值，有则从redis中取*/
         jedis.select(3);//标签查的放在3库中
-        result = jedis.get(pageNo + tag + pageSize);
+        result = jedis.get(pageNo + param + pageSize);
         if (result != null && !result.equals("[]")) {
             jedis.close();
             super.ResponseJson(response, result);
@@ -259,13 +260,13 @@ public class UserController extends BaseController {
             count = pictureservice.selectCount();
             dto.setTotalCount(count);
             entityList = pictureservice.selectAll(dto);
-            List<PicturesEntity> lists = this.getList(entityList, tag);
+            List<PicturesEntity> lists = this.getList(entityList, param);
             map.put("size", lists.size());
             map.put("list", lists);
             String json = JSON.toJSONString(map);
             if (lists.size() > 0) {
-                jedis.set(pageNo + tag + pageSize, json);
-                jedis.expire(pageNo + tag + pageSize, 24 * 60 * 60);
+                jedis.set(pageNo + param + pageSize, json);
+                jedis.expire(pageNo + param + pageSize, 24 * 60 * 60);
             }
             jedis.close();
             super.ResponseJson(response, json);
