@@ -2,6 +2,7 @@ package com.jascola.service;
 
 import com.jascola.dao.PictureDao;
 import com.jascola.dto.PicQueryDto;
+import com.jascola.entity.CollectionEntity;
 import com.jascola.entity.PicturesEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,7 +59,15 @@ public class Pictureservice {
         return dao.selectCountByAuName(authorname);
     }
 
-    public List<PicturesEntity> checkCollected(String phone){
+    public List<PicturesEntity> checkCollected(String phone) {
         return dao.checkCollected(phone);
+    }
+
+    public int collect(CollectionEntity entity) {
+        return dao.collect(entity);
+    }
+
+    public int outCollect(CollectionEntity entity) {
+        return dao.outCollect(entity);
     }
 }

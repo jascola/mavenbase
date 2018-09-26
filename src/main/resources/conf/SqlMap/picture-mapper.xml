@@ -16,7 +16,8 @@
         WHERE flag = 1 AND picname = #{picname}
     </select>
 
-    <select id="selectByAuName" parameterType="com.jascola.dto.PicQueryDto" resultType="com.jascola.entity.PicturesEntity">
+    <select id="selectByAuName" parameterType="com.jascola.dto.PicQueryDto"
+            resultType="com.jascola.entity.PicturesEntity">
         select id, picname,authorname,tag,realdir,virtualdir,indexpic,indexrealdir,counts FROM pictures
         WHERE flag = 1 AND authorname = #{authorname} limit  #{startRow},#{pageSize}
     </select>
@@ -26,15 +27,15 @@
     </select>
 
 
-    <delete id="deleteByPicName" parameterType="java.lang.String" >
+    <delete id="deleteByPicName" parameterType="java.lang.String">
         delete from pictures  WHERE picname = #{picname}
     </delete>
 
-    <delete id="deleteByAuName" parameterType="java.lang.String" >
+    <delete id="deleteByAuName" parameterType="java.lang.String">
         delete from pictures WHERE authorname = #{authorname}
     </delete>
 
-    <delete id="deleteById" parameterType="java.lang.String" >
+    <delete id="deleteById" parameterType="java.lang.String">
         delete from pictures where id=#{id}
     </delete>
 
@@ -48,15 +49,23 @@
         SELECT *FROM pictures WHERE flag = 1 limit  #{startRow},#{pageSize}
     </select>
 
-    <select id="selectCount"  resultType="java.lang.Integer">
+    <select id="selectCount" resultType="java.lang.Integer">
         SELECT count(*) FROM pictures WHERE flag = 1
     </select>
 
-    <select id="selectCountByAuName"  resultType="java.lang.Integer">
+    <select id="selectCountByAuName" resultType="java.lang.Integer">
         SELECT count(*) FROM pictures WHERE flag = 1 and authorname = #{authorname}
     </select>
 
-    <select id="checkCollected"  resultType="com.jascola.entity.PicturesEntity" parameterType="java.lang.String">
-        SELECT * FROM pictures WHERE id in(SELECT id FROM collection WHERE phone = #{phone});
+    <select id="checkCollected" resultType="com.jascola.entity.PicturesEntity" parameterType="java.lang.String">
+        SELECT * FROM pictures WHERE id in(SELECT id FROM collection WHERE phone = #{phone})
     </select>
+
+    <insert id="collect" parameterType="com.jascola.entity.CollectionEntity">
+        insert into collection (phone, id) values (#{phone},#{id})
+    </insert>
+
+    <delete id="outCollect" parameterType="com.jascola.entity.CollectionEntity">
+        delete from collection where id=#{id} and phone = #{phone}
+    </delete>
 </mapper>

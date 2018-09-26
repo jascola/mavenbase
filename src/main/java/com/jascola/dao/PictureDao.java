@@ -1,6 +1,7 @@
 package com.jascola.dao;
 
 import com.jascola.dto.PicQueryDto;
+import com.jascola.entity.CollectionEntity;
 import com.jascola.entity.PicturesEntity;
 import org.springframework.stereotype.Repository;
 
@@ -32,4 +33,8 @@ public interface PictureDao {
     Integer selectCountByAuName(String authorname);
 
     List<PicturesEntity> checkCollected(String phone);
+
+    int collect(CollectionEntity entity);
+
+    int outCollect(CollectionEntity entity);
 }

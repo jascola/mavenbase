@@ -3,6 +3,7 @@ package com.jascola.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.jascola.dto.PicQueryDto;
+import com.jascola.entity.CollectionEntity;
 import com.jascola.entity.PicturesEntity;
 import com.jascola.entity.UserEntity;
 import com.jascola.service.Pictureservice;
@@ -94,7 +95,7 @@ public class UserController extends BaseController {
                         cookie.setMaxAge(2 * 60 * 60);
                         response.addCookie(cookie);
                         super.ResponseSuccess(response, messages);
-                        System.out.println("从redis里查");
+                        LOGGER.info("从redis里查");
                         return;
                     } else {
                         messages.add("账号或密码错误！");
@@ -125,7 +126,7 @@ public class UserController extends BaseController {
                             response.addCookie(cookie);
 
                             super.ResponseSuccess(response, messages);
-                            System.out.println("从数据库中查");
+                            LOGGER.info("从数据库中查");
 
                             return;
                         } else {
@@ -300,21 +301,59 @@ public class UserController extends BaseController {
 
     /*判断是否收藏了相册*/
     @RequestMapping(value = "checkcollected.html")
-    public void checkCollected(String id,HttpServletResponse response,HttpServletRequest request){
+    public void checkCollected(String id, HttpServletResponse response, HttpServletRequest request) {
         List<String> messages = new ArrayList<String>();
         String content = super.tokenCheck(response, request, messages, jedisPool);
         UserEntity entity = JSON.parseObject(content, UserEntity.class);
         List<PicturesEntity> lists = pictureservice.checkCollected(entity.getPhone());
-        for(PicturesEntity pic:lists){
-            if(pic.getId().equals(id)){
+        for (PicturesEntity pic : lists) {
+            if (pic.getId().equals(id)) {
                 messages.add("el-icon-star-on");
                 break;
             }
         }
-        if (messages.size()==0){
+        if (messages.size() == 0) {
             messages.add("el-icon-star-off");
         }
-        super.ResponseJson(response,JSON.toJSONString(messages));
+        super.ResponseJson(response, JSON.toJSONString(messages));
+    }
+
+    /*收藏*/
+    @RequestMapping(value = "collect.html")
+    public void collect(String id, HttpServletResponse response, HttpServletRequest request) {
+        List<String> messages = new ArrayList<String>();
+        String content = super.tokenCheck(response, request, messages, jedisPool);
+        UserEntity entity = JSON.parseObject(content, UserEntity.class);
+        CollectionEntity collect = new CollectionEntity();
+        collect.setId(id);
+        collect.setPhone(entity.getPhone());
+        try {
+            pictureservice.collect(collect);
+            messages.add("收藏成功！");
+            super.ResponseSuccess(response, messages);
+        } catch (Exception e) {
+            messages.add("收藏失败！");
+            super.ResponseError(response, messages);
+        }
+    }
+
+    /*取消收藏*/
+    @RequestMapping(value = "collect.html")
+    public void outCollect(String id, HttpServletResponse response, HttpServletRequest request) {
+        List<String> messages = new ArrayList<String>();
+        String content = super.tokenCheck(response, request, messages, jedisPool);
+        UserEntity entity = JSON.parseObject(content, UserEntity.class);
+        CollectionEntity collect = new CollectionEntity();
+        collect.setId(id);
+        collect.setPhone(entity.getPhone());
+        try {
+            pictureservice.outCollect(collect);
+            messages.add("取消收藏成功！");
+            super.ResponseSuccess(response, messages);
+        } catch (Exception e) {
+            messages.add("取消收藏失败！");
+            super.ResponseError(response, messages);
+        }
     }
 
     private List<PicturesEntity> getList(List<PicturesEntity> entities, String tag) {
