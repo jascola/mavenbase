@@ -238,6 +238,7 @@ public class UserController extends BaseController {
     }
 
     /*用标签查询相册*/
+    /*先查出全部数据，再判断标签，最后手动控制分页数据*/
     @RequestMapping(value = "/tagquery.html")
     public void querytag(HttpServletResponse response,PicQueryDto dto) {
         Jedis jedis = jedisPool.getResource();
@@ -257,9 +258,9 @@ public class UserController extends BaseController {
         }
         /*没有值去查数据库，并将数据存入redis*/
         else {
-            count = pictureservice.selectCount();
+            count = pictureservice.selectNoCount(dto);
             dto.setTotalCount(count);
-            entityList = pictureservice.selectAll(dto);
+            entityList = pictureservice.selectNoLimit(dto);
             List<PicturesEntity> lists = this.getList(entityList, param);
             map.put("size", lists.size());
             map.put("list", lists);

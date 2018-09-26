@@ -37,4 +37,8 @@ public interface PictureDao {
     int collect(CollectionEntity entity);
 
     int outCollect(CollectionEntity entity);
+
+    List<PicturesEntity> selectNoLimit(PicQueryDto dto);
+
+    Integer selectNoCount(PicQueryDto dto);
 }

@@ -70,4 +70,12 @@ public class Pictureservice {
     public int outCollect(CollectionEntity entity) {
         return dao.outCollect(entity);
     }
+
+    public List<PicturesEntity> selectNoLimit(PicQueryDto dto){
+        return dao.selectNoLimit(dto);
+    }
+
+    public Integer selectNoCount(PicQueryDto dto){
+        return dao.selectNoCount(dto);
+    }
 }

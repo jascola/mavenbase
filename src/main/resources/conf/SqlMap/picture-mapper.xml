@@ -68,4 +68,12 @@
     <delete id="outCollect" parameterType="com.jascola.entity.CollectionEntity">
         delete from collection where id=#{id} and phone = #{phone}
     </delete>
+
+    <select id="selectNoLimit" resultType="com.jascola.entity.PicturesEntity" parameterType="com.jascola.dto.PicQueryDto">
+        SELECT *FROM pictures WHERE flag = 1 and tag like concat('%',#{param},'%')  limit  #{startRow},#{pageSize}
+    </select>
+
+    <select id="selectNoCount" resultType="java.lang.Integer" parameterType="com.jascola.dto.PicQueryDto">
+        SELECT count(*) FROM pictures WHERE flag = 1 and tag like concat('%',#{param},'%')
+    </select>
 </mapper>
