@@ -153,7 +153,7 @@ public class UserController extends BaseController {
 
     /*根据查询条件获取相册*/
     @RequestMapping(value = "/getpic.html")
-    public void getPic(PicQueryDto dto, HttpServletResponse response, HttpServletRequest request) {
+    public void getPic(PicQueryDto dto, HttpServletResponse response) {
         Jedis jedis = jedisPool.getResource();
         String param = dto.getParam();
         String pageSize = String.valueOf(dto.getPageSize());
@@ -165,11 +165,11 @@ public class UserController extends BaseController {
         /*判断查询条件*/
         if (param == null || param.equals("")) {
             /*判断redis是否有值，有则从redis中取*/
+            jedis.select(0);//为空的查询都放在 0库中
             result = jedis.get(pageNo + "null" + pageSize);
             if (result != null && !result.equals("[]")) {
                 jedis.close();
                 super.ResponseJson(response, result);
-                return;
             }
             /*没有值去查数据库，并将数据存入redis*/
             else {
@@ -180,14 +180,14 @@ public class UserController extends BaseController {
                 map.put("list", entityList);
                 String json = JSON.toJSONString(map);
                 jedis.set(pageNo + "null" + pageSize, json);
-                jedis.expire(pageNo + "null" + pageSize, 2 * 60 * 60);
+                jedis.expire(pageNo + "null" + pageSize, 24 * 60 * 60);
                 jedis.close();
                 super.ResponseJson(response, json);
-                return;
             }
         } else {
             /*判断查询条件是作者名还是相册名*/
             if ((count = pictureservice.selectCountByAuName(param)) != 0) {
+                jedis.select(1);//作者名的放在1库中
                 result = jedis.get(pageNo + param + pageSize);
                 if (result != null && !result.equals("[]")) {
                     jedis.close();
@@ -201,11 +201,11 @@ public class UserController extends BaseController {
                 map.put("list", entityList);
                 String json = JSON.toJSONString(map);
                 jedis.set(pageNo + param + pageSize, json);
-                jedis.expire(pageNo + param + pageSize, 2 * 60 * 60);
+                jedis.expire(pageNo + param + pageSize, 24 * 60 * 60);
                 jedis.close();
                 super.ResponseJson(response, json);
-                return;
             } else {
+                jedis.select(2);//相册名的放在2库中
                 result = jedis.get(pageNo + param + pageSize);
                 if (result != null && !result.equals("[]")) {
                     jedis.close();
@@ -217,10 +217,9 @@ public class UserController extends BaseController {
                 map.put("list", entityList);
                 String json = JSON.toJSONString(map);
                 jedis.set(pageNo + param + pageSize, json);
-                jedis.expire(pageNo + param + pageSize, 2 * 60 * 60);
+                jedis.expire(pageNo + param + pageSize, 24 * 60 * 60);
                 jedis.close();
                 super.ResponseJson(response, json);
-                return;
             }
         }
     }
@@ -249,11 +248,11 @@ public class UserController extends BaseController {
         List<PicturesEntity> entityList;
         Map<String, Object> map = new HashMap<String, Object>();
         /*判断redis是否有值，有则从redis中取*/
+        jedis.select(3);//标签查的放在3库中
         result = jedis.get(pageNo + tag + pageSize);
         if (result != null && !result.equals("[]")) {
             jedis.close();
             super.ResponseJson(response, result);
-            return;
         }
         /*没有值去查数据库，并将数据存入redis*/
         else {
@@ -266,11 +265,10 @@ public class UserController extends BaseController {
             String json = JSON.toJSONString(map);
             if (lists.size() > 0) {
                 jedis.set(pageNo + tag + pageSize, json);
-                jedis.expire(pageNo + tag + pageSize, 2 * 60 * 60);
+                jedis.expire(pageNo + tag + pageSize, 24 * 60 * 60);
             }
             jedis.close();
             super.ResponseJson(response, json);
-            return;
         }
     }
 
@@ -281,21 +279,20 @@ public class UserController extends BaseController {
         String result;
         List<PicturesEntity> entityList;
         /*判断redis是否有值，有则从redis中取*/
+        jedis.select(4);//id查的放在4库中
         result = jedis.get(id);
         if (result != null && !result.equals("[]")) {
             jedis.close();
             super.ResponseJson(response, result);
-            return;
         }
         /*没有值去查数据库，并将数据存入redis*/
         else {
             entityList = pictureservice.selectById(id);
             String json = JSON.toJSONString(entityList);
             jedis.set(id, json);
-            jedis.expire(id, 2 * 60 * 60);
+            jedis.expire(id, 24 * 60 * 60);
             jedis.close();
             super.ResponseJson(response, json);
-            return;
         }
     }
 
@@ -304,8 +301,19 @@ public class UserController extends BaseController {
     public void checkCollected(String id, HttpServletResponse response, HttpServletRequest request) {
         List<String> messages = new ArrayList<String>();
         String content = super.tokenCheck(response, request, messages, jedisPool);
+        Jedis jedis = jedisPool.getResource();
+        List<PicturesEntity> lists;
+        jedis.select(5);
         UserEntity entity = JSON.parseObject(content, UserEntity.class);
-        List<PicturesEntity> lists = pictureservice.checkCollected(entity.getPhone());
+        String result;
+        result = jedis.get(entity.getPhone());
+        if (result != null && !result.equals("[]")) {
+            lists = JSON.parseArray(result, PicturesEntity.class);
+        } else {
+            lists = pictureservice.checkCollected(entity.getPhone());
+            jedis.set(entity.getPhone(), JSON.toJSONString(lists));
+            jedis.expire(entity.getPhone(), 24 * 60 * 60);
+        }
         for (PicturesEntity pic : lists) {
             if (pic.getId().equals(id)) {
                 messages.add("el-icon-star-on");
@@ -315,6 +323,7 @@ public class UserController extends BaseController {
         if (messages.size() == 0) {
             messages.add("el-icon-star-off");
         }
+        jedis.close();
         super.ResponseJson(response, JSON.toJSONString(messages));
     }
 
@@ -323,6 +332,8 @@ public class UserController extends BaseController {
     public void collect(String id, HttpServletResponse response, HttpServletRequest request) {
         List<String> messages = new ArrayList<String>();
         String content = super.tokenCheck(response, request, messages, jedisPool);
+        Jedis jedis = jedisPool.getResource();
+        jedis.select(5);
         UserEntity entity = JSON.parseObject(content, UserEntity.class);
         CollectionEntity collect = new CollectionEntity();
         collect.setId(id);
@@ -334,14 +345,19 @@ public class UserController extends BaseController {
         } catch (Exception e) {
             messages.add("收藏失败！");
             super.ResponseError(response, messages);
+        } finally {
+            jedis.flushDB();
+            jedis.close();
         }
     }
 
     /*取消收藏*/
-    @RequestMapping(value = "collect.html")
+    @RequestMapping(value = "outcollect.html")
     public void outCollect(String id, HttpServletResponse response, HttpServletRequest request) {
         List<String> messages = new ArrayList<String>();
         String content = super.tokenCheck(response, request, messages, jedisPool);
+        Jedis jedis = jedisPool.getResource();
+        jedis.select(5);
         UserEntity entity = JSON.parseObject(content, UserEntity.class);
         CollectionEntity collect = new CollectionEntity();
         collect.setId(id);
@@ -353,7 +369,16 @@ public class UserController extends BaseController {
         } catch (Exception e) {
             messages.add("取消收藏失败！");
             super.ResponseError(response, messages);
+        } finally {
+            jedis.flushDB();
+            jedis.close();
         }
+    }
+
+    /*取消收藏*/
+    @RequestMapping(value = "getcollect.html")
+    public void getCollect(PicQueryDto dto, HttpServletResponse response, HttpServletRequest request) {
+        //只存一条redis
     }
 
     private List<PicturesEntity> getList(List<PicturesEntity> entities, String tag) {

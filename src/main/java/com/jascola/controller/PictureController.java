@@ -100,11 +100,17 @@ public class PictureController extends BaseController {
                 entity.setCounts(formDate.getCounts());
                 if(pictureservice.selectById(formDate.getId()).size()>0){
                     pictureservice.update(entity);
-                    jedis.flushDB();
+                    for(int i=0;i<6;i++) {
+                        jedis.select(i);
+                        jedis.flushDB();
+                    }
                 }
                 else {
                     pictureservice.insert(entity);
-                    jedis.flushDB();
+                    for(int i=0;i<6;i++) {
+                        jedis.select(i);
+                        jedis.flushDB();
+                    }
                 }
                 messages.add("上传成功");
                 super.ResponseSuccess(response, messages);
@@ -132,7 +138,10 @@ public class PictureController extends BaseController {
         try{
             pictureservice.deleteById(id);
             messages.add("删除相册成功");
-            jedis.flushDB();
+            for(int i=0;i<6;i++) {
+                jedis.select(i);
+                jedis.flushDB();
+            }
             super.ResponseSuccess(response,messages);
         }catch (Exception e){
             messages.add("删除相册失败");
