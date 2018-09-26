@@ -50,7 +50,7 @@ public class AdminController extends BaseController {
                         messages.add("登录成功！");
                         messages.add("欢迎！管理员");
                         Cookie cookie = new Cookie("admintoken", base64Encoder.encode(entity.getPhone().getBytes()));
-                        cookie.setMaxAge(2 * 60 * 60);
+                        cookie.setMaxAge(24 * 60 * 60);
                         response.addCookie(cookie);
                         super.ResponseSuccess(response, messages);
                         System.out.println("从redis里查");
@@ -76,10 +76,10 @@ public class AdminController extends BaseController {
                         messages.add("欢迎！管理员");
                         /*签发token*/
                         jedis.set(result.getPhone(), JSON.toJSONString(result));
-                        jedis.expire(result.getPhone(), 2 * 60 * 60);/*一天之内都可以访问，不用登录*/
+                        jedis.expire(result.getPhone(), 24 * 60 * 60);/*一天之内都可以访问，不用登录*/
 
                         Cookie cookie = new Cookie("admintoken", base64Encoder.encode(result.getPhone().getBytes()));
-                        cookie.setMaxAge(2 * 60 * 60);
+                        cookie.setMaxAge(24 * 60 * 60);
                         response.addCookie(cookie);
 
 

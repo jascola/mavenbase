@@ -92,7 +92,7 @@ public class UserController extends BaseController {
                         messages.add("登录成功！");
                         messages.add("欢迎！" + jedisuser.getName());
                         Cookie cookie = new Cookie("token", base64Encoder.encode(entity.getPhone().getBytes()));
-                        cookie.setMaxAge(2 * 60 * 60);
+                        cookie.setMaxAge(24 * 60 * 60);
                         response.addCookie(cookie);
                         super.ResponseSuccess(response, messages);
                         LOGGER.info("从redis里查");
