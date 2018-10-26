@@ -49,9 +49,14 @@ public class PictureController extends BaseController {
 
     @RequestMapping(value = "/upload.html")
     @ResponseBody
-    public DeferredResult<String> aysncUpload(HttpServletResponse response, PictureDto formDate, HttpServletRequest request) throws InterruptedException {
+    public DeferredResult<String> aysncUpload(HttpServletResponse response, PictureDto formDate, HttpServletRequest request) {
         DeferredResult<String> deferredResult = new DeferredResult<String>();
-        deferredResult = upload(formDate,deferredResult);
+        try {
+            deferredResult = upload(formDate,deferredResult);
+        }catch (Exception e){
+            LOGGER.info("===================》》调用异步方法异常");
+        }
+
         return deferredResult;
     }
     @RequestMapping(value = "deletepic.html")
