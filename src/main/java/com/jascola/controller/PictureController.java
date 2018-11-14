@@ -84,7 +84,6 @@ public class PictureController extends BaseController {
         }
     }
     private DeferredResult<String> upload(PictureDto formDate, DeferredResult<String> deferredResult) throws InterruptedException {
-        Thread.sleep(20000);
         Jedis jedis = jedisPool.getResource();
         MultipartFile[] files = formDate.getImages();
         PicturesEntity entity = new PicturesEntity();
