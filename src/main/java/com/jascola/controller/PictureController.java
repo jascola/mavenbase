@@ -143,9 +143,11 @@ public class PictureController extends BaseController {
                         jedis.flushDB();
                     }
                 }
+                //0 表示成功
                 deferredResult.setResult("0");
                 return deferredResult;
             } catch (Exception e) {
+                // 1表示 上传异常
                 deferredResult.setResult("1");
                 LOGGER.error(e.getLocalizedMessage(), e);
                 return deferredResult;
@@ -153,6 +155,7 @@ public class PictureController extends BaseController {
                 jedis.close();
             }
         }
+        //2 表示 上传的值不能为空
         deferredResult.setResult("2");
         return deferredResult;
     }
