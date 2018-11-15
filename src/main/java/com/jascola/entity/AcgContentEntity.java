@@ -16,7 +16,7 @@ public class AcgContentEntity implements Serializable {
     /**
      * 合集id
      */
-    private Integer acgctid;
+    private String acgctid;
     /**
      * 日期
      */
@@ -49,4 +49,13 @@ public class AcgContentEntity implements Serializable {
     public void setMagnet(String magnet) {
         this.magnet = magnet;
     }
+
+    public String getAcgctid() {
+        return acgctid;
+    }
+
+    public void setAcgctid(String acgctid) {
+        this.acgctid = acgctid;
+    }
+
 }

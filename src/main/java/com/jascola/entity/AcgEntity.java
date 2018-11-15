@@ -8,9 +8,13 @@ import java.io.Serializable;
 public class AcgEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     /**
+     * lifan唯一id
+     */
+    String id;
+    /**
      * 合集名称(属于哪个合集)
      */
-    private Integer acgctid;
+    private String acgctid;
     /**
      * lifan 名称
      */
@@ -36,11 +40,11 @@ public class AcgEntity implements Serializable {
      */
     private String publisher;
 
-    public Integer getAcgctid() {
+    public String getAcgctid() {
         return acgctid;
     }
 
-    public void setAcgctid(Integer acgctid) {
+    public void setAcgctid(String acgctid) {
         this.acgctid = acgctid;
     }
 
@@ -90,5 +94,13 @@ public class AcgEntity implements Serializable {
 
     public void setPublisher(String publisher) {
         this.publisher = publisher;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }
