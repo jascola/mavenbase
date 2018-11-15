@@ -93,9 +93,8 @@ DROP TABLE IF EXISTS `acg`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `acg` (
-  id             INT PRIMARY KEY
-  COMMENT '自增主键',
-  acgctid        INT COMMENT '合集id',
+  id             varchar(100) PRIMARY KEY,
+  acgctid        varchar(100) COMMENT '合集id',
   acgname        VARCHAR(100) COMMENT '里番名',
   releasetime    DATE COMMENT '发行日期',
   magnet         VARCHAR(100) COMMENT '磁力链接',
@@ -114,9 +113,7 @@ DROP TABLE IF EXISTS `acg_content`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `acg_content` (
-  id          INT PRIMARY KEY
-  COMMENT '自增主键',
-  acgctid     INT COMMENT '合集id',
+  acgctid     varchar(100) COMMENT '合集id',
   acgctname   VARCHAR(100) COMMENT '里番合集名',
   releasetime DATE COMMENT '合集收集年月',
   magnet      VARCHAR(100) COMMENT '磁力链接'

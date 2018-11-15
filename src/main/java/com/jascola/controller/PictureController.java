@@ -127,7 +127,7 @@ public class PictureController extends BaseController {
                 entity.setRealdir(realpath + formDate.getPicname());
                 entity.setVirtualdir(virpath + formDate.getPicname());
                 entity.setTag(formDate.getTag());
-                entity.setId(formDate.getId());
+                entity.setId("PIC"+System.currentTimeMillis());
                 entity.setCounts(formDate.getCounts());
                 if(pictureservice.selectById(formDate.getId()).size()>0){
                     pictureservice.update(entity);
