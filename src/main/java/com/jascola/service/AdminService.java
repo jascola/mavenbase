@@ -12,7 +12,6 @@ public class AdminService {
     @Autowired
     private AdminDao dao;
 
-    @Transactional
     public AdminEntity selectByPhone(String phone) {
         return dao.selectByPhone(phone);
     }

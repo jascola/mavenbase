@@ -6,6 +6,7 @@ import com.jascola.entity.CollectionEntity;
 import com.jascola.entity.PicturesEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ public class Pictureservice {
     @Autowired
     private PictureDao dao;
 
+    @Transactional
     public int insert(PicturesEntity entity) {
         return dao.insert(entity);
     }
@@ -35,10 +37,12 @@ public class Pictureservice {
         return dao.deleteByAuName(authorname);
     }
 
+    @Transactional
     public int deleteById(String id) {
         return dao.deleteById(id);
     }
 
+    @Transactional
     public int update(PicturesEntity entity) {
         return dao.update(entity);
     }
@@ -63,19 +67,21 @@ public class Pictureservice {
         return dao.checkCollected(phone);
     }
 
+    @Transactional
     public int collect(CollectionEntity entity) {
         return dao.collect(entity);
     }
 
+    @Transactional
     public int outCollect(CollectionEntity entity) {
         return dao.outCollect(entity);
     }
 
-    public List<PicturesEntity> selectNoLimit(PicQueryDto dto){
+    public List<PicturesEntity> selectNoLimit(PicQueryDto dto) {
         return dao.selectNoLimit(dto);
     }
 
-    public Integer selectNoCount(PicQueryDto dto){
+    public Integer selectNoCount(PicQueryDto dto) {
         return dao.selectNoCount(dto);
     }
 }
