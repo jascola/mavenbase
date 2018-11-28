@@ -5,6 +5,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping(value = "/acg")
-public class AcgContent {
+public class AcgController {
 
 }

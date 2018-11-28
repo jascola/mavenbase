@@ -4,7 +4,7 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface AcgContentDao {
+public interface AcgDao {
 
 
 }

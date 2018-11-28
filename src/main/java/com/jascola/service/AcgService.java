@@ -1,14 +1,14 @@
 package com.jascola.service;
 
 
-import com.jascola.dao.AcgContentDao;
+import com.jascola.dao.AcgDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AcgContentService {
+public class AcgService {
     @Autowired
-    private AcgContentDao dao;
+    private AcgDao dao;
 
 
 }
