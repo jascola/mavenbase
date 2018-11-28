@@ -5,7 +5,14 @@
 <!-- namespcae原来指命名空间 -->
 <!-- 现在namespace指要映射给哪个接口 -->
 <mapper namespace="com.jascola.dao.AcgDao">
+    <insert id="insert" parameterType="com.jascola.entity.AcgEntity">
+        INSERT INTO acg (id,acgctid,acgname,releasetime,magnet,indexpic,indexrealdir,publisher)
+        VALUES (#{id},#{acgctid},#{acgname},#{releasetime},#{magnet},#{indexpic},#{indexrealdir},#{publisher})
+    </insert>
 
-
+    <update id="update" parameterType="com.jascola.entity.AcgEntity">
+        update acg set acgctid=#{acgctid},acgname=#{acgname},releasetime=#{releasetime},magnet=#{magnet},indexpic=#{indexpic},
+        indexrealdir=#{indexrealdir},publisher=#{publisher} where id=#{id}
+    </update>
 
 </mapper>
